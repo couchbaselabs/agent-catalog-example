@@ -1,0 +1,19 @@
+# For downloading and ingesting blog data into Couchbase.
+newspaper3k~=0.2.8
+semchunk~=2.1.0
+lxml-html-clean~=0.1.1
+sentence-transformers~=3.0.1
+python-dotenv~=1.0.1
+couchbase~=4.3.0
+
+# For building agents and hosting an agent server.
+controlflow~=0.8.2
+fastapi~=0.111.1
+pydantic~=2.8.2
+
+# For building a sample agent interface.
+requests~=2.32.3
+streamlit~=1.36.0
+
+# For now, these have to be manually installed (from a .whl file).
+rosetta-core~=0.1.0
