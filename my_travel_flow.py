@@ -75,6 +75,7 @@ def run_flow(thread_id: str, to_user_queue: multiprocessing.Queue, from_user_que
                 break
 
 
+# TODO (GLENN): This part currently needs some TLC...
 def _build_recommender_task(tool_provider: rosetta.core.tools.Provider, talk_to_user) -> controlflow.Task:
     with controlflow.Task(objective="Create a travel itinerary based on a user's interests.",
                           result_type=str) as build_travel_itinerary:
