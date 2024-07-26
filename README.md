@@ -62,7 +62,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    ```bash
    rosetta index travel_tools
    ```
-   The local catalog, by default, will appear as `.out/tool_catalog.json`.
+   The local catalog, by default, will appear as `.out/catalog.json`.
    In the future, there will be an option to register / add your tools to Capella.
 3. Now that we have our tools available, our agent is ready to execute!
    Run the command below to start the agent server (via FastAPI and ControlFlow).
