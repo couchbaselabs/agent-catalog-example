@@ -5,7 +5,7 @@ import pydantic
 import os
 import re
 
-from rosetta.core.tools import tool
+from rosetta.core.tool import tool
 
 
 def _get_couchbase_cluster() -> couchbase.cluster.Cluster:

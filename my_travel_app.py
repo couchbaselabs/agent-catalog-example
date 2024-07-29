@@ -48,9 +48,11 @@ if user_input := streamlit.chat_input():
     with streamlit.chat_message('assistant'):
         output_message = requests.post(
             streamlit.session_state.chat_url,
-            json={'inp': user_input},
+            params={'inp': user_input},
         )
-        response = streamlit.write(output_message)
+        response_json = output_message.json()
+        response = response_json['response']
+        streamlit.markdown(response)
     streamlit.session_state.messages.append({
         'role': 'assistant',
         'content': response
