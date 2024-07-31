@@ -17,3 +17,4 @@ streamlit~=1.36.0
 
 # For now, these have to be manually installed (from a .whl file).
 rosetta-core~=0.1.0
+pre-commit
