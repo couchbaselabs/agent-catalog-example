@@ -9,9 +9,9 @@ if 'thread_id' not in streamlit.session_state:
     dotenv.load_dotenv()
 
     # Determine our agent endpoints.
-    agent_server_base = os.getenv('AGENT_CONN_STRING')
-    start_url = agent_server_base + '/start'
-    chat_url = agent_server_base + '/chat'
+    agent_server_url = f"http://{os.getenv('AGENT_CONN_DOMAIN')}:{os.getenv('AGENT_CONN_PORT')}"
+    start_url = agent_server_url + '/start'
+    chat_url = agent_server_url + '/chat'
 
     # Here, we make our initial call to our agent.
     response = requests.post(start_url)

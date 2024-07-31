@@ -1,28 +1,34 @@
 # rosetta-sample
 
-A sample agentic workflow built using Rosetta.
+Sample agentic workflows built using Rosetta.
 
 ## Rosetta Setup
 
-Before we start, we need the `rosetta-core` package.
-
-1. Head over to the [rosetta-core](https://github.com/couchbaselabs/rosetta-core) repository to generate a `.whl`
-   file (in the future, we will host `rosetta` on PyPI).
-2. Install following requirements to run the examples in this repository.
+1. Ensure that you have `python3.11` and `poetry` installed.
    ```bash
-   python3 -m pip install -r requirements.txt
-   
-   # Install the .whl files from the previous step...
-   python3 -m pip install rosetta_core-*.*.*-py3-*-any.whl 
+   python3 -m pip install poetry
    ```
-3. Test your installation by running the `rosetta init` command.
+2. Clone this repository -- make sure that you have an SSH key setup!
    ```bash
+   git clone git@github.com:couchbaselabs/rosetta-example.git
+   ```
+3. Install the dependencies from `pyproject.toml`.
+   ```bash
+   poetry install 
+   ```
+4. You should now have the `rosetta` command line tool installed.
+   Test your installation by running the `rosetta init` command.
+   ```bash
+   poetry shell
    rosetta init
    ```
 
-## Travel Example Setup
+## Example #1: Travel Agent
+
+### Setup
 
 Now, we need some data in Couchbase!
+In the future, we will have a Docker image to simplify this setup.
 
 1. Create a Couchbase instance (either locally or on Capella).
 2. Load the `travel-sample` example in your Couchbase instance (under Settings -> Sample Buckets).
@@ -31,16 +37,17 @@ Now, we need some data in Couchbase!
    ```sql
    CREATE COLLECTION `travel-sample`.`inventory`.`article` IF NOT EXISTS;
    ```
-5. Run the `ingest_blog_data.py` setup script to generate embeddings and insert articles into the 
+5. Run the `ingest_blogs.py` setup script to generate embeddings and insert articles into the
    `travel-sample.inventory.article` collection above.
    ```bash
-   python3 setup_travel_data.py
+   cd examples/travel_agent
+   python3 travel_data/ingest_blogs.py
    ```   
 6. Create a FTS index for the `travel-sample.inventory.article` collection and the field `vec`.
    See the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html) for
    instructions on how to do so using the UI (using the Search -> QUICK INDEX screen).
 
-## Travel Example Agent
+### Execution
 
 We are now ready to start using Rosetta and ControlFlow to build agents!
 
@@ -48,29 +55,35 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    ```
    OPENAI_API_KEY=[INCLUDE KEY HERE]
    ```
-2. We have defined 22 tools (4 "real" tools and 18 "dummy" tools) in the `travel_tools` directory spread across files 
+2. We have defined 24 tools (6 "real" tools and 18 "dummy" tools) in the `travel_tools` directory spread across files
    of multiple types (`.py`, `.sqlpp`, `.yaml`):
    ```bash
-   ls travel_tools
-   # python_travel_tools.py
+   ls my_tools
    # blogs_from_interests.yaml
-   # direct_flights.sqlpp
-   # one_layover_flights.sqlpp
+   # find_direct_flights.sqlpp
+   # find_one_layover_flights.sqlpp
+   # python_travel_tools.py
+   # rewards_service.yaml
    ```
    We must now "index" our tools for Rosetta to serve to ControlFlow for use in its agentic workflows.
-   Use the `register` command to create a local catalog, and point to where all of our tools are located.
+   Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
+   cd examples/travel_agent
    rosetta index travel_tools
    ```
-   The local catalog, by default, will appear as `.out/catalog.json`.
+   The local catalog, by default, will appear as `.out/tool_catalog.json`.
    In the future, there will be an option to register / add your tools to Capella.
 3. Now that we have our tools available, our agent is ready to execute!
-   Run the command below to start the agent server (via FastAPI and ControlFlow).
+   Run the command below to start the agent server (via FastAPI and ControlFlow) and a dummy REST server for managing
+   travel rewards.
    ```bash
-   fastapi run my_travel_agent.py
+   cd examples/travel_agent
+   fastapi run my_servers/agent_server.py --port 10000
+   fastapi run my_servers/rewards_server.py --port 10001
    ```
-4. With our agent up and running, let's now spin up our application to interact with our agent using a ChatGPT-esque 
-   interface (via Streamlit).
+4. With our servers up and running, let's now spin up a basic application to interact with our agent using a
+   ChatGPT-esque interface (via Streamlit).
    ```bash
-   streamlit run my_travel_app.py
+   cd examples/travel_agent
+   streamlit run travel_app.py
    ```

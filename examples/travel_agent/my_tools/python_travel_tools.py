@@ -1,20 +1,7 @@
-import couchbase.auth
-import couchbase.options
-import couchbase.cluster
 import pydantic
-import os
 import re
 
 from rosetta.core.tool import tool
-
-
-def _get_couchbase_cluster() -> couchbase.cluster.Cluster:
-    authenticator = couchbase.auth.PasswordAuthenticator(
-        username=os.getenv('CB_USERNAME'),
-        password=os.getenv('CB_PASSWORD')
-    )
-    conn_string = os.getenv('CB_CONN_STRING')
-    return couchbase.cluster.Cluster(conn_string, couchbase.options.ClusterOptions(authenticator))
 
 
 @tool(infer_schema=True)

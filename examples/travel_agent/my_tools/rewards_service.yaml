@@ -1,0 +1,7 @@
+Tool Class: http_request
+
+Open API:
+    File: my_servers/rewards_spec.json
+    Endpoints:
+        - POST /create
+        - GET /rewards/{member_id}

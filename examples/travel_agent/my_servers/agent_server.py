@@ -10,7 +10,7 @@ import queue
 import dataclasses
 import threading
 
-import my_travel_flow
+import agent_flow
 
 agent_server = fastapi.FastAPI()
 registry_lock = threading.Semaphore()
@@ -33,7 +33,7 @@ def start_conversation():
     # Execute our flow (as a separate process)...
     flow_args = {'thread_id': thread_id, 'to_user_queue': to_user_queue, 'from_user_queue': from_user_queue}
     flow_thread = threading.Thread(
-        target=my_travel_flow.run_flow,
+        target=agent_flow.run_flow,
         kwargs=flow_args
     )
     flow_thread.start()
