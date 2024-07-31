@@ -41,7 +41,7 @@ In the future, we will have a Docker image to simplify this setup.
    `travel-sample.inventory.article` collection above.
    ```bash
    cd examples/travel_agent
-   python3 travel_data/ingest_blogs.py
+   python3 setup/ingest_blogs.py
    ```   
 6. Create a FTS index for the `travel-sample.inventory.article` collection and the field `vec`.
    See the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html) for
@@ -58,7 +58,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
 2. We have defined 24 tools (6 "real" tools and 18 "dummy" tools) in the `travel_tools` directory spread across files
    of multiple types (`.py`, `.sqlpp`, `.yaml`):
    ```bash
-   ls my_tools
+   ls tools
    # blogs_from_interests.yaml
    # find_direct_flights.sqlpp
    # find_one_layover_flights.sqlpp
@@ -78,8 +78,8 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    travel rewards.
    ```bash
    cd examples/travel_agent
-   fastapi run my_servers/agent_server.py --port 10000
-   fastapi run my_servers/rewards_server.py --port 10001
+   fastapi run services/agent_server.py --port 10000
+   fastapi run services/rewards_server.py --port 10001
    ```
 4. With our servers up and running, let's now spin up a basic application to interact with our agent using a
    ChatGPT-esque interface (via Streamlit).

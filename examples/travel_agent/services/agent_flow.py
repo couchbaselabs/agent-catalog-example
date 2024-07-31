@@ -1,7 +1,10 @@
+import os
+
 import controlflow
 import controlflow.tools
 import pydantic
 import dataclasses
+import sentence_transformers
 import typing
 import queue
 import rosetta.core
@@ -17,10 +20,15 @@ class TaskBuilderContext:
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
     # TODO (GLENN): Finish the capabilities to load tools + prompts from a CB instance.
+    embedding_model = sentence_transformers.SentenceTransformer(os.getenv('DEFAULT_SENTENCE_EMODEL'))
     tool_provider = rosetta.core.tool.LocalProvider(
-        catalog_location='catalog/tool_catalog.json'
+        catalog_file='catalog/tool_catalog.json',
+        embedding_model=embedding_model
     )
-    prompt_tracer = rosetta.core.prompt.LocalTracer(catalog_location='catalog/prompt_catalog.json')
+    prompt_tracer = rosetta.core.prompt.LocalTracer(
+        catalog_file='catalog/prompt_catalog.json',
+        embedding_model=embedding_model
+    )
 
     # Note: a limitation of ControlFlow is that this function MUST be called talk_to_user.
     def talk_to_user(message: str, get_response: bool = True) -> str:
