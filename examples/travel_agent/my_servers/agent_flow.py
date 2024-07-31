@@ -18,9 +18,9 @@ class TaskBuilderContext:
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
     # TODO (GLENN): Finish the capabilities to load tools + prompts from a CB instance.
     tool_provider = rosetta.core.tool.LocalProvider(
-        catalog_location='.out/tool_catalog.json'
+        catalog_location='catalog/tool_catalog.json'
     )
-    prompt_tracer = rosetta.core.prompt.LocalTracer(catalog_location='.out/prompt_catalog.json')
+    prompt_tracer = rosetta.core.prompt.LocalTracer(catalog_location='catalog/prompt_catalog.json')
 
     # Note: a limitation of ControlFlow is that this function MUST be called talk_to_user.
     def talk_to_user(message: str, get_response: bool = True) -> str:
