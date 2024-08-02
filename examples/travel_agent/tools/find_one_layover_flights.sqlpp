@@ -1,11 +1,11 @@
 /*
-Name: find_routes_with_one_layover
+name: find_routes_with_one_layover
 
-Description: >
+description: >
     Find a list of routes between two airports with one layover.
     The routes always start at source_airport and end at destination_airport.
 
-Input: >
+input: >
     {
       "type": "object",
       "properties": {
@@ -14,7 +14,7 @@ Input: >
       }
     }
 
-Output: >
+output: >
     {
       "type": "array",
       "items": {

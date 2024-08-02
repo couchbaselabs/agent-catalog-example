@@ -1,27 +1,27 @@
-Tool Class: semantic_search
+tool_kind: semantic_search
 
-Name: get_travel_blog_snippets_from_user_interests
+name: get_travel_blog_snippets_from_user_interests
 
-Description: >
-    Fetch snippets of travel blogs using a user's interests.
+description: >
+  Fetch snippets of travel blogs using a user's interests.
 
-Input: >
-    {
-      "type": "object",
-      "properties": {
-        "user_interests": {
-          "type": "array",
-          "items": { "type": "string" }
-        }
+input: >
+  {
+    "type": "object",
+    "properties": {
+      "user_interests": {
+        "type": "array",
+        "items": { "type": "string" }
       }
     }
+  }
 
 
-Vector Search:
-    bucket: travel-sample
-    scope: inventory
-    collection: article
-    index: articles-index
-    vector_field: vec
-    text_field: text
-    embedding_model: sentence-transformers/all-MiniLM-L12-v2
+vector_search:
+  bucket: travel-sample
+  scope: inventory
+  collection: article
+  index: articles-index
+  vector_field: vec
+  text_field: text
+  embedding_model: sentence-transformers/all-MiniLM-L12-v2

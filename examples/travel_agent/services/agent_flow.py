@@ -22,11 +22,11 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     # TODO (GLENN): Finish the capabilities to load tools + prompts from a CB instance.
     embedding_model = sentence_transformers.SentenceTransformer(os.getenv('DEFAULT_SENTENCE_EMODEL'))
     tool_provider = rosetta.core.tool.LocalProvider(
-        catalog_file='catalog/tool_catalog.json',
+        catalog_file='.rosetta-catalog/tool_catalog.json',
         embedding_model=embedding_model
     )
     prompt_tracer = rosetta.core.prompt.LocalTracer(
-        catalog_file='catalog/prompt_catalog.json',
+        catalog_file='.rosetta-catalog/prompt_catalog.json',
         embedding_model=embedding_model
     )
 

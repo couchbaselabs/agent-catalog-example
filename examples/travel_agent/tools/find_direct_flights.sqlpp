@@ -1,10 +1,10 @@
 /*
-Name: find_direct_routes_between_airports
+name: find_direct_routes_between_airports
 
-Description: >
+description: >
     Find a list of direct routes between two airports using source_airport and destination_airport.
 
-Input: >
+input: >
     {
       "type": "object",
       "properties": {
@@ -13,7 +13,7 @@ Input: >
       }
     }
 
-Output: >
+output: >
     {
       "type": "array",
       "items": {
