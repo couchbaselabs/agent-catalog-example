@@ -72,6 +72,6 @@ target/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 
-# Ignore our catalog + catalog-activity.
-catalog/
-catalog-activity/
+# Ignore rosetta's catalog + activity subdirectories.
+.rosetta-catalog/
+.rosetta-activity/
