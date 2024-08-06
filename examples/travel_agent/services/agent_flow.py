@@ -21,6 +21,8 @@ class TaskBuilderContext:
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
     # TODO (GLENN): Finish the capabilities to load tools + prompts from a CB instance.
     embedding_model = sentence_transformers.SentenceTransformer(os.getenv('DEFAULT_SENTENCE_EMODEL'))
+    # TODO: We should instead grab the embedding_model name from the catalog
+    # as it remembers it in the meta.json.
     tool_provider = rosetta.core.tool.LocalProvider(
         catalog_file='.rosetta-catalog/tool_catalog.json',
         embedding_model=embedding_model
