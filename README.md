@@ -14,7 +14,7 @@ Sample agentic workflows built using Rosetta.
    ```
 3. Install the dependencies from `pyproject.toml`.
    ```bash
-   poetry install 
+   poetry install --no-root
    ```
 4. You should now have the `rosetta` command line tool installed.
    Test your installation by running the `rosetta` command.
@@ -37,11 +37,15 @@ through `git`, perform the following:
    # rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
    rosetta-core = { path = "PATH TO ROSETTA-CORE REPO" }
    ```
-2. From the top-level `rosetta-example` directory (not `rosetta-core`), update your Poetry environment.
+2. Remove the old `rosetta-core` from your Python environment.
+   ```bash
+   pip uninstall rosetta-core
+   ```
+3. From `rosetta-example` (not `rosetta-core`), update your Poetry environment.
    ```bash
    poetry update
    ```
-3. Your Poetry environment for `rosetta-example` should now possess the `rosetta-core` files that are in your local
+4. Your Poetry environment for `rosetta-example` should now possess the `rosetta-core` files that are in your local
    `rosetta-core` directory.
    _Note that changes in `rosetta-core` aren't automatically reflected!
-   You still need to run `poetry update` everytime a file in your local `rosetta-core` is changed._
+   You still need to run `pip uninstall rosetta-core; poetry update` everytime a file in your local `rosetta-core` is changed._

@@ -44,7 +44,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
    cd examples/travel_agent
-   rosetta index travel_tools
+   rosetta index tools
    ```
    The local catalog, by default, will appear as `.out/tool_catalog.json`.
    In the future, there will be an option to register / add your tools to Capella.
