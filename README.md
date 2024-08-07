@@ -35,7 +35,7 @@ through `git`, perform the following:
    ```toml
    # The core of Rosetta.
    # rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
-   rosetta-core = { path = "PATH TO ROSETTA-CORE REPO" }
+   rosetta-core = { path = "PATH TO ROSETTA-CORE REPO", develop = true }
    ```
 2. Remove the old `rosetta-core` from your Python environment.
    ```bash
@@ -47,5 +47,5 @@ through `git`, perform the following:
    ```
 4. Your Poetry environment for `rosetta-example` should now possess the `rosetta-core` files that are in your local
    `rosetta-core` directory.
-   _Note that changes in `rosetta-core` aren't automatically reflected!
-   You still need to run `pip uninstall rosetta-core; poetry update` everytime a file in your local `rosetta-core` is changed._
+   The `develop = true` attribute should signal to poetry that `rosetta-core` is an "editable" package now, and allow 
+   for `rosetta-example` to directly call `rosetta-core` code (i.e., no duplicated source files).
