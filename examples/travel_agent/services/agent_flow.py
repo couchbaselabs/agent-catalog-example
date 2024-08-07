@@ -1,13 +1,18 @@
 import os
-
-import controlflow
-import controlflow.tools
+import rosetta.core
 import pydantic
 import dataclasses
 import sentence_transformers
 import typing
 import queue
-import rosetta.core
+import dotenv
+
+# Load our OPENAI_API_KEY first...
+dotenv.load_dotenv()
+
+# ...before loading control flow.
+import controlflow
+import controlflow.tools
 
 
 @dataclasses.dataclass

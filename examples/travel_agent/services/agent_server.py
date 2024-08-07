@@ -1,9 +1,3 @@
-import dotenv
-
-# Load our OPENAI_API_KEY first...
-dotenv.load_dotenv()
-
-# ...and then continue with the rest of the code.
 import fastapi
 import uuid
 import queue
