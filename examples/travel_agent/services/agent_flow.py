@@ -18,7 +18,6 @@ import controlflow.tools
 @dataclasses.dataclass
 class TaskBuilderContext:
     tool_provider: rosetta.core.tool.Provider
-    prompt_tracer: rosetta.core.prompt.Tracer
     parent_flow: controlflow.Flow
     talk_to_user: typing.Callable
 
@@ -30,10 +29,6 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     # as it remembers it in the meta.json.
     tool_provider = rosetta.core.tool.LocalProvider(
         catalog_file='.rosetta-catalog/tool_catalog.json',
-        embedding_model=embedding_model
-    )
-    prompt_tracer = rosetta.core.prompt.LocalTracer(
-        catalog_file='.rosetta-catalog/prompt_catalog.json',
         embedding_model=embedding_model
     )
 
@@ -62,18 +57,16 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         thread_id=thread_id
     )
     with tool_provider as tool_provider, \
-            prompt_tracer as prompt_tracer, \
             travel_flow as travel_flow:
         tbc = TaskBuilderContext(
             tool_provider=tool_provider,
-            prompt_tracer=prompt_tracer,
             parent_flow=travel_flow,
             talk_to_user=talk_to_user
         )
         while True:
             # Request router: find out what the user wants to do.
             get_user_intent = controlflow.Task(
-                objective=tbc.prompt_tracer("Ask the user what they need help with."),
+                objective="Ask the user what they need help with.",
                 result_type=[
                     'travel rewards',
                     'trip planning',
@@ -96,9 +89,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
                     next_task = _build_faq_answers_task(tbc)
                 case 'not applicable':
                     next_task = controlflow.Task(
-                        objective=tbc.prompt_tracer(
-                            'Tell the user that you cannot help them with their request and explain why.'
-                        ),
+                        objective='Tell the user that you cannot help them with their request and explain why.',
                         tools=[talk_to_user]
                     )
                 case _:
@@ -106,9 +97,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             travel_flow.run()
             if next_task.is_failed():
                 controlflow.Task(
-                    objective=tbc.prompt_tracer(
-                        "Tell the user that you cannot help them with their request right now."
-                    ),
+                    objective="Tell the user that you cannot help them with their request right now.",
                     tools=[talk_to_user]
                 )
                 travel_flow.run()
@@ -116,7 +105,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 
             # See if the user wants to continue.
             ask_to_continue = controlflow.Task(
-                objective=tbc.prompt_tracer("Ask the user if they want to continue."),
+                objective="Ask the user if they want to continue.",
                 result_type=[True, False],
                 tools=[talk_to_user]
             )
@@ -130,35 +119,33 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
     with tbc.parent_flow:
         # Task 1: Get the destination airport.
         get_user_interests = controlflow.Task(
-            objective=tbc.prompt_tracer("Get user's interests around travel."),
+            objective="Get user's interests around travel.",
             tools=[tbc.talk_to_user],
             result_type=str
         )
         get_recommended_destinations = controlflow.Task(
-            objective=tbc.prompt_tracer("Using the user interests, find travel destinations using travel blogs."),
+            objective="Using the user interests, find travel destinations using travel blogs.",
             result_type=str,
             context={'user_interests': get_user_interests},
             tools=tbc.tool_provider.get_tools_for("reading travel blogs with user interests"),
             depends_on=[get_user_interests]
         )
         verify_recommended_destinations = controlflow.Task(
-            objective=tbc.prompt_tracer(
-                "Ask the user to confirm a travel destination from the list of recommended destinations."
-            ),
+            objective="Ask the user to confirm a travel destination from the list of recommended destinations.",
             result_type=str,
             context={'destinations': get_recommended_destinations},
             depends_on=[get_recommended_destinations],
             tools=[tbc.talk_to_user]
         )
         get_closest_dest_airport = controlflow.Task(
-            objective=tbc.prompt_tracer("Locate the closet airport to the travel destination."),
-            instructions=tbc.prompt_tracer("Using the travel destination, return the closet airport's IATA code."),
+            objective="Locate the closet airport to the travel destination.",
+            instructions="Using the travel destination, return the closet airport's IATA code.",
             result_type=str,
             context={'destination': verify_recommended_destinations},
             depends_on=[verify_recommended_destinations]
         )
         verify_dest_airport = controlflow.Task(
-            objective=tbc.prompt_tracer("Make sure that the IATA code is valid."),
+            objective="Make sure that the IATA code is valid.",
             tools=tbc.tool_provider.get_tools_for("checking airport codes"),
             context={'dest_airport': get_closest_dest_airport},
             depends_on=[get_closest_dest_airport],
@@ -166,18 +153,18 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
 
         # Part #2: get the source location.
         get_user_location = controlflow.Task(
-            objective=tbc.prompt_tracer("Ask the user for their location."),
+            objective="Ask the user for their location.",
             tools=[tbc.talk_to_user],
             result_type=str,
         )
         get_closest_source_airport = controlflow.Task(
-            objective=tbc.prompt_tracer("Locate the closet airport to the travel destination."),
-            instructions=tbc.prompt_tracer("Using the user location, return the closet airport's IATA code."),
+            objective="Locate the closet airport to the travel destination.",
+            instructions="Using the user location, return the closet airport's IATA code.",
             result_type=str,
             depends_on=[get_user_location]
         )
         verify_source_airport = controlflow.Task(
-            objective=tbc.prompt_tracer("Make sure that the IATA code is valid."),
+            objective="Make sure that the IATA code is valid.",
             tools=tbc.tool_provider.get_tools_for("checking airport codes"),
             context={'source_airport': get_closest_source_airport},
             depends_on=[get_closest_source_airport]
@@ -191,10 +178,8 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
 
         # Part #3: find a route from the source airport to the destination airport.
         find_source_to_dest_route = controlflow.Task(
-            objective=tbc.prompt_tracer(
-                "Find a sequence of routes between the source airport and the destination airport."
-            ),
-            instructions=tbc.prompt_tracer(
+            objective="Find a sequence of routes between the source airport and the destination airport.",
+            instructions=(
                 "Try to find a direct routes first between the source airport and the destination airport. "
                 "If there are no direct routes, then find a one-layover route. "
                 "If there are no such routes, then try another source airport that is close. "
@@ -208,8 +193,8 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
 
         # Part #4: format the plan in Markdown.
         format_travel_plan = controlflow.Task(
-            objective=tbc.prompt_tracer("Format the flight plan into a document."),
-            instructions=tbc.prompt_tracer(
+            objective="Format the flight plan into a document.",
+            instructions=(
                 "Use Markdown. Include the user location, travel destination, and flight plan. "
                 "Return this formatted plan to the user. "
             ),
@@ -225,9 +210,12 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
 #
 
 def _build_rewards_task(tbc: TaskBuilderContext) -> controlflow.Task:
-    new_task = controlflow.Task("Manage a user's travel rewards.", result_type=str)
-    tbc.parent_flow.add_task(new_task)
-    return new_task
+    with tbc.parent_flow:
+        get_user_intent = controlflow.Task(
+            objective="Help the user with their rewards.",
+            tools=[tbc.talk_to_user] + tbc.tool_provider.get_tools_for('travel rewards')
+        )
+        return get_user_intent
 
 
 def _build_faq_answers_task(tbc: TaskBuilderContext) -> controlflow.Task:
