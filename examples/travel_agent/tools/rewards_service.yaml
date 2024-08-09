@@ -1,4 +1,4 @@
-tool_kind: http_request
+record_kind: http_request
 
 open_api:
   filename: services/rewards_spec.json

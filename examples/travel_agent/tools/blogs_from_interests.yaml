@@ -1,4 +1,4 @@
-tool_kind: semantic_search
+record_kind: semantic_search
 
 name: get_travel_blog_snippets_from_user_interests
 
