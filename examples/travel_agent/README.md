@@ -60,5 +60,5 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    ChatGPT-esque interface (via Streamlit).
    ```bash
    cd examples/travel_agent
-   streamlit run travel_app.py
+   streamlit run app.py
    ```
