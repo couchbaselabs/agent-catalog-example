@@ -31,7 +31,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/NewMemberResponse"
+                }
               }
             }
           },
@@ -69,7 +71,9 @@
             "description": "Successful Response",
             "content": {
               "application/json": {
-                "schema": {}
+                "schema": {
+                  "$ref": "#/components/schemas/GetMemberRewardsResponse"
+                }
               }
             }
           },
@@ -89,6 +93,28 @@
   },
   "components": {
     "schemas": {
+      "GetMemberRewardsResponse": {
+        "properties": {
+          "member_id": {
+            "type": "string",
+            "title": "Member Id"
+          },
+          "member_since": {
+            "type": "string",
+            "title": "Member Since"
+          },
+          "rewards": {
+            "$ref": "#/components/schemas/Rewards"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_id",
+          "member_since",
+          "rewards"
+        ],
+        "title": "GetMemberRewardsResponse"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -101,6 +127,37 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "NewMemberResponse": {
+        "properties": {
+          "member_name": {
+            "type": "string",
+            "title": "Member Name"
+          },
+          "member_id": {
+            "type": "string",
+            "title": "Member Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "member_name",
+          "member_id"
+        ],
+        "title": "NewMemberResponse"
+      },
+      "Rewards": {
+        "properties": {
+          "points": {
+            "type": "integer",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "points"
+        ],
+        "title": "Rewards"
       },
       "ValidationError": {
         "properties": {
