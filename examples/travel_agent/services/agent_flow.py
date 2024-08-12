@@ -1,8 +1,8 @@
 import os
+import pathlib
 import rosetta.core
 import pydantic
 import dataclasses
-import sentence_transformers
 import typing
 import queue
 import dotenv
@@ -23,13 +23,13 @@ class TaskBuilderContext:
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    # TODO (GLENN): Finish the capabilities to load tools + prompts from a CB instance.
-    embedding_model = sentence_transformers.SentenceTransformer(os.getenv('DEFAULT_SENTENCE_EMODEL'))
-    # TODO: We should instead grab the embedding_model name from the catalog
-    # as it remembers it in the meta.json.
-    tool_provider = rosetta.core.tool.LocalProvider(
-        catalog_file='.rosetta-catalog/tool_catalog.json',
-        embedding_model=embedding_model
+    tool_provider = rosetta.core.tool.Provider(
+        catalog=rosetta.core.catalog.CatalogMem.load(pathlib.Path('.rosetta-catalog')),
+        secrets={
+            'CB_CONN_STRING': lambda: os.getenv('CB_CONN_STRING'),
+            'CB_USERNAME': lambda: os.getenv('CB_USERNAME'),
+            'CB_PASSWORD': lambda: os.getenv('CB_PASSWORD')
+        }
     )
 
     # Note: a limitation of ControlFlow is that this function MUST be called talk_to_user.
@@ -188,7 +188,7 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
             depends_on=[verify_source_airport, verify_dest_airport],
             context={'dest_airport': get_closest_dest_airport,
                      'source_airport': get_closest_source_airport},
-            tools=tbc.tool_provider.get_tools_for('finding routes between airports', k=2)
+            tools=tbc.tool_provider.get_tools_for('finding routes between airports', limit=2)
         )
 
         # Part #4: format the plan in Markdown.
