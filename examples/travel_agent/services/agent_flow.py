@@ -17,13 +17,13 @@ import controlflow.tools
 
 @dataclasses.dataclass
 class TaskBuilderContext:
-    tool_provider: rosetta.core.tool.Provider
+    tool_provider: rosetta.core.provider.Provider
     parent_flow: controlflow.Flow
     talk_to_user: typing.Callable
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    tool_provider = rosetta.core.tool.Provider(
+    tool_provider = rosetta.core.provider.Provider(
         catalog=rosetta.core.catalog.CatalogMem.load(pathlib.Path('.rosetta-catalog')),
         secrets={
             'CB_CONN_STRING': lambda: os.getenv('CB_CONN_STRING'),

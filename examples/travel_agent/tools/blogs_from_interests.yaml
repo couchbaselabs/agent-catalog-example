@@ -22,6 +22,10 @@ secrets:
       username: CB_USERNAME
       password: CB_PASSWORD
 
+tags:
+  - gdpr_2016_compliant
+  - ccpa_2019_compliant
+
 vector_search:
   bucket: travel-sample
   scope: inventory
