@@ -23,8 +23,9 @@ class TaskBuilderContext:
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
+    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
     tool_provider = rosetta.core.provider.Provider(
-        catalog=rosetta.core.catalog.CatalogMem.load(pathlib.Path('.rosetta-catalog')),
+        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
         secrets={
             'CB_CONN_STRING': lambda: os.getenv('CB_CONN_STRING'),
             'CB_USERNAME': lambda: os.getenv('CB_USERNAME'),

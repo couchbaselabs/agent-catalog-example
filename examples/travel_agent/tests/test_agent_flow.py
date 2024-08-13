@@ -13,8 +13,9 @@ import controlflow.tools
 
 
 def test_flight_planning():
+    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
     tool_provider = rosetta.core.provider.Provider(
-        catalog=rosetta.core.catalog.CatalogMem.load(pathlib.Path('.rosetta-catalog')),
+        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
         func_transform=langchain_core.tools.StructuredTool.from_function,
         secrets={
             'CB_CONN_STRING': lambda: os.getenv('CB_CONN_STRING'),
