@@ -56,8 +56,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         agents=[controlflow.Agent(name='Couchbase Travel Agent')],
         thread_id=thread_id
     )
-    with tool_provider as tool_provider, \
-            travel_flow as travel_flow:
+    with tool_provider, travel_flow:
         tbc = TaskBuilderContext(
             tool_provider=tool_provider,
             parent_flow=travel_flow,
