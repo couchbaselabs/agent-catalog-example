@@ -26,8 +26,8 @@ requests = "^2.32.3"
 streamlit = "^1.36.0"
 
 # The core of Rosetta.
-rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
-#rosetta-core = { path = "PATH TO ROSETTA-CORE REPO", develop = true }
+#rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
+rosetta-core = { path = "/Users/tjohari/rosetta/rosetta-core", develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"

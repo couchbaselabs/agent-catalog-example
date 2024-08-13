@@ -78,3 +78,4 @@ target/
 
 # .env files.
 examples/travel_agent/.env
+.env
