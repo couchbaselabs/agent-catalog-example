@@ -32,5 +32,21 @@ def test_flight_planning():
         print(my_task.result)
 
 
+def test_airport_checking():
+    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
+    tool_provider = rosetta.core.provider.Provider(
+        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
+        func_transform=langchain_core.tools.StructuredTool.from_function,
+    )
+    with tool_provider:
+        my_task = controlflow.Task(
+            objective="Check if 'SFO' is a valid airport code.",
+            tools=tool_provider.get_tools_for('checking valid airport codes')
+        )
+        my_task.run()
+        print(my_task.result)
+
+
 if __name__ == '__main__':
     test_flight_planning()
+    test_airport_checking()
