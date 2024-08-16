@@ -27,11 +27,11 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
     tool_provider = rosetta.core.provider.Provider(
         catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
-        func_transform=langchain_core.tools.StructuredTool.from_function,
+        decorator=langchain_core.tools.StructuredTool.from_function,
         secrets={
-            'CB_CONN_STRING': lambda: os.getenv('CB_CONN_STRING'),
-            'CB_USERNAME': lambda: os.getenv('CB_USERNAME'),
-            'CB_PASSWORD': lambda: os.getenv('CB_PASSWORD')
+            'CB_CONN_STRING': os.getenv('CB_CONN_STRING'),
+            'CB_USERNAME': os.getenv('CB_USERNAME'),
+            'CB_PASSWORD': os.getenv('CB_PASSWORD')
         }
     )
 
