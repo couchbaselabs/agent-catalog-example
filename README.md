@@ -25,27 +25,31 @@ Sample agentic workflows built using Rosetta.
 
 ## For Developers
 
-### Using Local `rosetta-core`
+### Using Local `rosetta` and `rosetta-core`
 
-By default, `rosetta-example` will clone the `rosetta-core` repository and use the files specified in `master`.
-For developers working on `rosetta-core` that want to see their changes reflected in `rosetta-example` without going
-through `git`, perform the following:
+By default, `rosetta-example` will clone the `rosetta` repository and use the files specified in `master`.
+For developers working on `rosetta-core` and/or `rosetta` that want to see their changes reflected in `rosetta-example`
+without going through `git`, perform the following:
 
-1. Modify the `rosetta-core` line in `pyproject.toml` to point to your `rosetta-core` directory.
+1. Modify the `rosetta` line in `pyproject.toml` to point to your `rosetta` directory.
    ```toml
    # The core of Rosetta.
-   # rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
-   rosetta-core = { path = "PATH TO ROSETTA-CORE REPO", develop = true }
+   # rosetta = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
+   rosetta = { path = PATH_TO_LOCAL_ROSETTA, develop = true }
    ```
-2. Remove the old `rosetta-core` from your Python environment.
+   If you want a local version of `rosetta-core`, add the line below:
+   ```toml
+   rosetta-core = { path = PATH_TO_LOCAL_ROSETTA_CORE, develop = true }
+   ```
+2. Remove the old `rosetta` (and `rosetta-core`) from your Python environment.
    ```bash
-   pip uninstall rosetta-core
+   pip uninstall rosetta rosetta-core
    ```
-3. From `rosetta-example` (not `rosetta-core`), update your Poetry environment.
+3. From `rosetta-example` (not `rosetta`), update your Poetry environment.
    ```bash
    poetry update
    ```
-4. Your Poetry environment for `rosetta-example` should now possess the `rosetta-core` files that are in your local
-   `rosetta-core` directory.
-   The `develop = true` attribute should signal to poetry that `rosetta-core` is an "editable" package now, and allow 
-   for `rosetta-example` to directly call `rosetta-core` code (i.e., no duplicated source files).
+4. Your Poetry environment for `rosetta-example` should now possess the `rosetta` files that are in your local
+   `rosetta` (and/or `rosetta-core`) directory.
+   The `develop = true` attribute should signal to poetry that `rosetta` / `rosetta-core` is an "editable" package now,
+   and allow  for `rosetta-example` to directly call `rosetta` / `rosetta-core` code (i.e., no duplicated source files).
