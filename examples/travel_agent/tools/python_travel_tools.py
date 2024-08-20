@@ -1,7 +1,7 @@
 import pydantic
 import re
 
-from rosetta.core.tool import tool
+from rosetta_core.tool import tool
 
 
 @tool

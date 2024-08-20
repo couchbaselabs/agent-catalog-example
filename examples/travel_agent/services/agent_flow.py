@@ -1,6 +1,5 @@
 import os
-import pathlib
-import rosetta.core
+import rosetta.provider
 import langchain_core.tools
 import pydantic
 import dataclasses
@@ -18,15 +17,13 @@ import controlflow.tools
 
 @dataclasses.dataclass
 class TaskBuilderContext:
-    tool_provider: rosetta.core.provider.Provider
+    tool_provider: rosetta.provider
     parent_flow: controlflow.Flow
     talk_to_user: typing.Callable
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
-    tool_provider = rosetta.core.provider.Provider(
-        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
+    tool_provider = rosetta.provider.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
         secrets={
             'CB_CONN_STRING': os.getenv('CB_CONN_STRING'),
@@ -59,7 +56,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         agents=[controlflow.Agent(name='Couchbase Travel Agent')],
         thread_id=thread_id
     )
-    with tool_provider, travel_flow:
+    with travel_flow:
         tbc = TaskBuilderContext(
             tool_provider=tool_provider,
             parent_flow=travel_flow,

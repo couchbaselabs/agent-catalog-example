@@ -1,11 +1,13 @@
 import os
-import pathlib
-import rosetta.core
+import rosetta.provider
 import langchain_core.tools
 import dotenv
+import pathlib
 
 # Load our OPENAI_API_KEY first...
-dotenv.load_dotenv()
+dotenv.load_dotenv(
+    pathlib.Path(__file__).parent.parent.parent / 'examples' / 'travel_agent' / '.env'
+)
 
 # ...before loading control flow.
 import controlflow
@@ -13,9 +15,7 @@ import controlflow.tools
 
 
 def test_flight_planning():
-    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
-    tool_provider = rosetta.core.provider.Provider(
-        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
+    tool_provider = rosetta.provider.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
         secrets={
             'CB_CONN_STRING': os.getenv('CB_CONN_STRING'),
@@ -32,9 +32,7 @@ def test_flight_planning():
 
 
 def test_airport_checking():
-    tool_catalog = pathlib.Path('.rosetta-catalog') / 'tool-catalog.json'
-    tool_provider = rosetta.core.provider.Provider(
-        catalog=rosetta.core.catalog.CatalogMem.load(tool_catalog),
+    tool_provider = rosetta.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
     )
     my_task = controlflow.Task(

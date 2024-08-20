@@ -2,8 +2,12 @@
 name = "rosetta-example"
 version = "0.1.0"
 description = "A sample agentic workflow built with help from Rosetta."
-authors = ["Glenn Galvizo <glenn.galvizo@couchbase.com>"]
+repository = "https://github.com/couchbaselabs/rosetta-example"
+authors = [
+    "Glenn Galvizo <glenn.galvizo@couchbase.com>"
+]
 readme = "README.md"
+package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -17,6 +21,7 @@ python-dotenv = "^1.0.1"
 couchbase = "^4.3.0"
 
 # For building agents and hosting an agent server.
+langchain-core = ">=0.2.23"
 controlflow = "^0.8.2"
 fastapi = "^0.111.1"
 pydantic = "^2.8.2"
@@ -25,9 +30,9 @@ pydantic = "^2.8.2"
 requests = "^2.32.3"
 streamlit = "^1.36.0"
 
-# The core of Rosetta.
-rosetta-core = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
-#rosetta-core = { path = "PATH TO ROSETTA-CORE REPO", develop = true }
+# The Rosetta project (the front-facing parts)!
+rosetta = { git = "git@github.com:couchbaselabs/rosetta.git" }
+# rosetta = { path = PATH_TO_LOCAL_ROSETTA, develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"
