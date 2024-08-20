@@ -1,5 +1,5 @@
 import os
-import rosetta_core.provider
+import rosetta.provider
 import langchain_core.tools
 import pydantic
 import dataclasses
@@ -7,30 +7,29 @@ import typing
 import queue
 import dotenv
 
+# Load our OPENAI_API_KEY first...
+dotenv.load_dotenv()
+
 # ...before loading control flow.
 import controlflow
 import controlflow.tools
 
 
-# Load our OPENAI_API_KEY first...
-dotenv.load_dotenv()
-
-
 @dataclasses.dataclass
 class TaskBuilderContext:
-    tool_provider: rosetta_core.provider
+    tool_provider: rosetta.provider
     parent_flow: controlflow.Flow
     talk_to_user: typing.Callable
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    tool_provider = rosetta_core.provider.Provider(
+    tool_provider = rosetta.provider.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
         secrets={
-            "CB_CONN_STRING": os.getenv("CB_CONN_STRING"),
-            "CB_USERNAME": os.getenv("CB_USERNAME"),
-            "CB_PASSWORD": os.getenv("CB_PASSWORD"),
-        },
+            'CB_CONN_STRING': os.getenv('CB_CONN_STRING'),
+            'CB_USERNAME': os.getenv('CB_USERNAME'),
+            'CB_PASSWORD': os.getenv('CB_PASSWORD')
+        }
     )
 
     # Note: a limitation of ControlFlow is that this function MUST be called talk_to_user.
@@ -54,23 +53,26 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 
     # TODO (GLENN): Replace this with Kush's agent.
     travel_flow = controlflow.Flow(
-        agents=[controlflow.Agent(name="Couchbase Travel Agent")], thread_id=thread_id
+        agents=[controlflow.Agent(name='Couchbase Travel Agent')],
+        thread_id=thread_id
     )
     with travel_flow:
         tbc = TaskBuilderContext(
-            tool_provider=tool_provider, parent_flow=travel_flow, talk_to_user=talk_to_user
+            tool_provider=tool_provider,
+            parent_flow=travel_flow,
+            talk_to_user=talk_to_user
         )
         while True:
             # Request router: find out what the user wants to do.
             get_user_intent = controlflow.Task(
                 objective="Ask the user what they need help with.",
                 result_type=[
-                    "travel rewards",
-                    "trip planning",
-                    "about agency questions",
-                    "not applicable",
+                    'travel rewards',
+                    'trip planning',
+                    'about agency questions',
+                    'not applicable'
                 ],
-                tools=[talk_to_user],
+                tools=[talk_to_user]
             )
             travel_flow.add_task(get_user_intent)
             travel_flow.run()
@@ -78,24 +80,24 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             # Decide the next task.
             user_intent = get_user_intent.result
             match user_intent:
-                case "travel rewards":
+                case 'travel rewards':
                     next_task = _build_rewards_task(tbc)
-                case "trip planning":
+                case 'trip planning':
                     next_task = _build_recommender_task(tbc)
-                case "about agency questions":
+                case 'about agency questions':
                     next_task = _build_faq_answers_task(tbc)
-                case "not applicable":
+                case 'not applicable':
                     next_task = controlflow.Task(
-                        objective="Tell the user that you cannot help them with their request and explain why.",
-                        tools=[talk_to_user],
+                        objective='Tell the user that you cannot help them with their request and explain why.',
+                        tools=[talk_to_user]
                     )
                 case _:
-                    raise RuntimeError("Bad response returned from agent!")
+                    raise RuntimeError('Bad response returned from agent!')
             travel_flow.run()
             if next_task.is_failed():
                 controlflow.Task(
                     objective="Tell the user that you cannot help them with their request right now.",
-                    tools=[talk_to_user],
+                    tools=[talk_to_user]
                 )
                 travel_flow.run()
                 break
@@ -104,7 +106,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             ask_to_continue = controlflow.Task(
                 objective="Ask the user if they want to continue.",
                 result_type=[True, False],
-                tools=[talk_to_user],
+                tools=[talk_to_user]
             )
             travel_flow.add_task(ask_to_continue)
             travel_flow.run()
@@ -118,33 +120,33 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
         get_user_interests = controlflow.Task(
             objective="Get user's interests around travel.",
             tools=[tbc.talk_to_user],
-            result_type=str,
+            result_type=str
         )
         get_recommended_destinations = controlflow.Task(
             objective="Using the user interests, find travel destinations using travel blogs.",
             result_type=str,
-            context={"user_interests": get_user_interests},
+            context={'user_interests': get_user_interests},
             tools=tbc.tool_provider.get_tools_for("reading travel blogs with user interests"),
-            depends_on=[get_user_interests],
+            depends_on=[get_user_interests]
         )
         verify_recommended_destinations = controlflow.Task(
             objective="Ask the user to confirm a travel destination from the list of recommended destinations.",
             result_type=str,
-            context={"destinations": get_recommended_destinations},
+            context={'destinations': get_recommended_destinations},
             depends_on=[get_recommended_destinations],
-            tools=[tbc.talk_to_user],
+            tools=[tbc.talk_to_user]
         )
         get_closest_dest_airport = controlflow.Task(
             objective="Locate the closet airport to the travel destination.",
             instructions="Using the travel destination, return the closet airport's IATA code.",
             result_type=str,
-            context={"destination": verify_recommended_destinations},
-            depends_on=[verify_recommended_destinations],
+            context={'destination': verify_recommended_destinations},
+            depends_on=[verify_recommended_destinations]
         )
         verify_dest_airport = controlflow.Task(
             objective="Make sure that the IATA code is valid.",
             tools=tbc.tool_provider.get_tools_for("checking airport codes"),
-            context={"dest_airport": get_closest_dest_airport},
+            context={'dest_airport': get_closest_dest_airport},
             depends_on=[get_closest_dest_airport],
         )
 
@@ -158,13 +160,13 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
             objective="Locate the closet airport to the travel destination.",
             instructions="Using the user location, return the closet airport's IATA code.",
             result_type=str,
-            depends_on=[get_user_location],
+            depends_on=[get_user_location]
         )
         verify_source_airport = controlflow.Task(
             objective="Make sure that the IATA code is valid.",
             tools=tbc.tool_provider.get_tools_for("checking airport codes"),
-            context={"source_airport": get_closest_source_airport},
-            depends_on=[get_closest_source_airport],
+            context={'source_airport': get_closest_source_airport},
+            depends_on=[get_closest_source_airport]
         )
 
         class TravelRoute(pydantic.BaseModel):
@@ -183,11 +185,9 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
             ),
             result_type=list[TravelRoute],
             depends_on=[verify_source_airport, verify_dest_airport],
-            context={
-                "dest_airport": get_closest_dest_airport,
-                "source_airport": get_closest_source_airport,
-            },
-            tools=tbc.tool_provider.get_tools_for("finding routes between airports", limit=2),
+            context={'dest_airport': get_closest_dest_airport,
+                     'source_airport': get_closest_source_airport},
+            tools=tbc.tool_provider.get_tools_for('finding routes between airports', limit=2)
         )
 
         # Part #4: format the plan in Markdown.
@@ -199,7 +199,7 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
             ),
             result_type=str,
             tools=[tbc.talk_to_user],
-            depends_on=[find_source_to_dest_route],
+            depends_on=[find_source_to_dest_route]
         )
         return format_travel_plan
 
@@ -208,19 +208,16 @@ def _build_recommender_task(tbc: TaskBuilderContext) -> controlflow.Task:
 # Below, we define some dummy tasks.
 #
 
-
 def _build_rewards_task(tbc: TaskBuilderContext) -> controlflow.Task:
     with tbc.parent_flow:
         get_user_intent = controlflow.Task(
             objective="Help the user with their rewards.",
-            tools=[tbc.talk_to_user] + tbc.tool_provider.get_tools_for("travel rewards"),
+            tools=[tbc.talk_to_user] + tbc.tool_provider.get_tools_for('travel rewards')
         )
         return get_user_intent
 
 
 def _build_faq_answers_task(tbc: TaskBuilderContext) -> controlflow.Task:
-    new_task = controlflow.Task(
-        "Answer frequently asked questions above our travel agency.", result_type=str
-    )
+    new_task = controlflow.Task("Answer frequently asked questions above our travel agency.", result_type=str)
     tbc.parent_flow.add_task(new_task)
     return new_task
