@@ -3838,7 +3838,7 @@ langchain = ["rosetta-lc @ git+ssh://git@github.com/couchbaselabs/rosetta-lc.git
 type = "git"
 url = "git@github.com:couchbaselabs/rosetta.git"
 reference = "HEAD"
-resolved_reference = "410d9a1ec766309be93ae41d9c799fc6de84bb5d"
+resolved_reference = "257aca88e708a13dd5a9292bc9af1c535f9c4310"
 
 [[package]]
 name = "rosetta-core"
