@@ -28,12 +28,12 @@ repos:
     hooks:
       - id: do-not-commit-openapi-key
         name: check for open api keys
-        entry: OPENAI_API_KEY=[a-zA-Z0-9_-]
+        entry: OPENAI_API_KEY\s*=\s*[a-zA-Z0-9_-]
         language: pygrep
         types: [text]
       - id: do-not-commit-local-dev
         name: check for local dev environment
-        entry: ^rosetta = \{ path =
+        entry: ^rosetta\s*=\s*\{\s*path\s*=
         language: pygrep
         types: [toml]
 
