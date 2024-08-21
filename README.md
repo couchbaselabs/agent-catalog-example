@@ -12,11 +12,15 @@ Sample agentic workflows built using Rosetta.
    ```bash
    git clone git@github.com:couchbaselabs/rosetta-example.git
    ```
-3. Install the dependencies from `pyproject.toml`.
+3. Navigate to the example you want to install (e.g., `examples/travel_agent`).
    ```bash
-   poetry install --no-root
+   cd examples/travel_agent
    ```
-4. You should now have the `rosetta` command line tool installed.
+4. Install the dependencies from `pyproject.toml`.
+   ```bash
+   poetry install
+   ```
+5. You should now have the `rosetta` command line tool installed.
    Test your installation by running the `rosetta` command.
    ```bash
    poetry shell
@@ -24,6 +28,16 @@ Sample agentic workflows built using Rosetta.
    ```
 
 ## For Developers
+
+### Setting up Pre-Commit
+
+To set up `pre-commit` and reap all the benefits of code formatting, linting, automatic `poetry` lock generation, etc...
+execute the following command:
+
+```bash
+pip install pre-commit
+pre-commit install
+```
 
 ### Using Local `rosetta` and `rosetta-core`
 
@@ -52,4 +66,4 @@ without going through `git`, perform the following:
 4. Your Poetry environment for `rosetta-example` should now possess the `rosetta` files that are in your local
    `rosetta` (and/or `rosetta-core`) directory.
    The `develop = true` attribute should signal to poetry that `rosetta` / `rosetta-core` is an "editable" package now,
-   and allow  for `rosetta-example` to directly call `rosetta` / `rosetta-core` code (i.e., no duplicated source files).
+   and allow for `rosetta-example` to directly call `rosetta` / `rosetta-core` code (i.e., no duplicated source files).

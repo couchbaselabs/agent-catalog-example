@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "rosetta-example"
+name = "travel-example"
 version = "0.1.0"
-description = "A sample agentic workflow built with help from Rosetta."
+description = "A travel agent example built with Rosetta and ControlFlow."
 repository = "https://github.com/couchbaselabs/rosetta-example"
 authors = [
     "Glenn Galvizo <glenn.galvizo@couchbase.com>"
