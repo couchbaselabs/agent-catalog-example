@@ -17,7 +17,7 @@ In the future, we will have a Docker image to simplify this setup.
    ```bash
    cd examples/travel_agent
    python3 setup/ingest_blogs.py
-   ```   
+   ```
 6. Create a FTS index for the `travel-sample.inventory.article` collection and the field `vec`.
    See the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html) for
    instructions on how to do so using the UI (using the Search -> QUICK INDEX screen).

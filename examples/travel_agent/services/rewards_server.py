@@ -1,8 +1,8 @@
-import random
-import uuid
+import datetime
 import fastapi
 import pydantic
-import datetime
+import random
+import uuid
 
 travel_server = fastapi.FastAPI()
 
@@ -23,18 +23,15 @@ class GetMemberRewardsResponse(pydantic.BaseModel):
 
 @travel_server.post("/create")
 def create_new_member(member_name: str) -> NewMemberResponse:
-    """ Create a new travel-rewards member. """
-    return NewMemberResponse(
-        member_name=member_name,
-        member_id=uuid.uuid4().hex
-    )
+    """Create a new travel-rewards member."""
+    return NewMemberResponse(member_name=member_name, member_id=uuid.uuid4().hex)
 
 
 @travel_server.get("/rewards/{member_id}")
 def get_member_rewards(member_id: str) -> GetMemberRewardsResponse:
-    """ Get the rewards associated with a member. """
+    """Get the rewards associated with a member."""
     return GetMemberRewardsResponse(
         member_id=member_id,
         member_since=str((datetime.datetime.today() - datetime.timedelta(days=100)).isoformat()),
-        rewards=GetMemberRewardsResponse.Rewards(points=random.randint(1, 10000))
+        rewards=GetMemberRewardsResponse.Rewards(points=random.randint(1, 10000)),
     )

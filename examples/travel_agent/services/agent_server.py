@@ -1,8 +1,8 @@
-import fastapi
-import uuid
-import queue
 import dataclasses
+import fastapi
+import queue
 import threading
+import uuid
 
 from .agent_flow import run_flow
 
@@ -25,11 +25,8 @@ def start_conversation():
     from_user_queue = queue.Queue()
 
     # Execute our flow (as a separate process)...
-    flow_args = {'thread_id': thread_id, 'to_user_queue': to_user_queue, 'from_user_queue': from_user_queue}
-    flow_thread = threading.Thread(
-        target=run_flow,
-        kwargs=flow_args
-    )
+    flow_args = {"thread_id": thread_id, "to_user_queue": to_user_queue, "from_user_queue": from_user_queue}
+    flow_thread = threading.Thread(target=run_flow, kwargs=flow_args)
     flow_thread.start()
 
     # ...register our flow...
@@ -44,10 +41,7 @@ def start_conversation():
     # ...and wait for the initial response to come back to our executor.
     initial_message = to_user_queue.get()
     to_user_queue.task_done()
-    return {
-        'thread_id': thread_id,
-        'initial_message': initial_message
-    }
+    return {"thread_id": thread_id, "initial_message": initial_message}
 
 
 @agent_server.post("/chat/{thread_id}")
@@ -65,6 +59,4 @@ def chat(thread_id: str, inp: str):
     # ...and wait for the output message to return.
     response = to_user_queue.get()
     to_user_queue.task_done()
-    return {
-        'response': response
-    }
+    return {"response": response}
