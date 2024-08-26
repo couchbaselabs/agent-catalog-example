@@ -1,10 +1,12 @@
 import dataclasses
 import dotenv
 import langchain_core.tools
+import langchain_openai
 import os
 import pydantic
 import queue
-import rosetta.provider
+import rosetta
+import rosetta.langchain
 import typing
 
 # Load our OPENAI_API_KEY first...
@@ -51,9 +53,9 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             return response
         return "Message sent to user."
 
-    # TODO (GLENN): Replace this with Kush's agent.
-    travel_flow = controlflow.Flow(agents=[controlflow.Agent(name="Couchbase Travel Agent")], thread_id=thread_id)
-    with travel_flow:
+    chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
+    travel_agent = controlflow.Agent(name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model))
+    with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         tbc = TaskBuilderContext(tool_provider=tool_provider, parent_flow=travel_flow, talk_to_user=talk_to_user)
         while True:
             # Request router: find out what the user wants to do.
