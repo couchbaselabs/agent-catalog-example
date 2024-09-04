@@ -2,30 +2,9 @@
 
 Sample agentic workflows built using Rosetta.
 
-## Repository Setup
+## For Users
 
-1. Ensure that you have `python3.11` and `poetry` installed.
-   ```bash
-   python3 -m pip install poetry
-   ```
-2. Clone this repository -- make sure that you have an SSH key setup!
-   ```bash
-   git clone git@github.com:couchbaselabs/rosetta-example.git
-   ```
-3. Navigate to the example you want to install (e.g., `examples/travel_agent`).
-   ```bash
-   cd examples/travel_agent
-   ```
-4. Install the dependencies from `pyproject.toml`.
-   ```bash
-   poetry install
-   ```
-5. You should now have the `rosetta` command line tool installed.
-   Test your installation by running the `rosetta` command.
-   ```bash
-   poetry shell
-   rosetta
-   ```
+Navigate to the specific example (e.g., `examples/travel_agent`) you are interested in! :-)
 
 ## For Developers
 
@@ -39,11 +18,11 @@ pip install pre-commit
 pre-commit install
 ```
 
-### Using Local `rosetta` and `rosetta-core`
+### Using Local `rosetta`, `rosetta-core`, and `rosetta-lc`
 
 By default, `rosetta-example` will clone the `rosetta` repository and use the files specified in `master`.
-For developers working on `rosetta-core` and/or `rosetta` that want to see their changes reflected in `rosetta-example`
-without going through `git`, perform the following:
+For developers working on `rosetta-core` / `rosetta` / `rosetta-lc` that want to see their changes reflected in
+`rosetta-example` without going through `git`, perform the following:
 
 1. Modify the `rosetta` line in `pyproject.toml` to point to your `rosetta` directory.
    ```toml
@@ -55,15 +34,20 @@ without going through `git`, perform the following:
    ```toml
    rosetta-core = { path = PATH_TO_LOCAL_ROSETTA_CORE, develop = true }
    ```
-2. Remove the old `rosetta` (and `rosetta-core`) from your Python environment.
+   If you want a local version of `rosetta-lc`, add the line below:
+   ```toml
+   rosetta-lc = { path = PATH_TO_LOCAL_ROSETTA_LC, develop = true }
+   ```
+2. Remove the old `rosetta` (and/or `rosetta-core` and/or `rosetta-lc`) from your Python environment.
    ```bash
-   pip uninstall rosetta rosetta-core
+   pip uninstall rosetta rosetta-core rosetta-lc
    ```
 3. From `rosetta-example` (not `rosetta`), update your Poetry environment.
    ```bash
    poetry update
    ```
 4. Your Poetry environment for `rosetta-example` should now possess the `rosetta` files that are in your local
-   `rosetta` (and/or `rosetta-core`) directory.
-   The `develop = true` attribute should signal to poetry that `rosetta` / `rosetta-core` is an "editable" package now,
-   and allow for `rosetta-example` to directly call `rosetta` / `rosetta-core` code (i.e., no duplicated source files).
+   `rosetta` (and/or `rosetta-core` and/or `rosetta-lc`) directory.
+   The `develop = true` attribute should signal to poetry that `rosetta` / `rosetta-core` / `rosetta-lc` is an
+   "editable" package now, and allow for `rosetta-example` to directly call `rosetta` / `rosetta-core` / `rosetta-lc`
+   code (i.e., no duplicated source files).

@@ -1,7 +1,7 @@
 import dotenv
 import http
 import os
-import requests
+import requests.adapters
 import streamlit
 
 # Our first-time actions: initialize a conversation with our agent.
@@ -13,11 +13,15 @@ if "thread_id" not in streamlit.session_state:
     start_url = agent_server_url + "/start"
     chat_url = agent_server_url + "/chat"
 
-    # Here, we make our initial call to our agent.
-    response = requests.post(start_url)
+    # Here, we make our initial call to our agent. We might need to retry.
+    retries = requests.adapters.Retry(total=10, backoff_factor=0.1)
+    session = requests.Session()
+    session.mount("http://", requests.adapters.HTTPAdapter(max_retries=retries))
+    response = session.post(start_url)
     if response.status_code != http.HTTPStatus.OK:
         raise EnvironmentError("Cannot connect to agent server!")
     response_json = response.json()
+    session.close()
 
     # Save our thread_id and the initial messages.
     streamlit.session_state.thread_id = response_json["thread_id"]

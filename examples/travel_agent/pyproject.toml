@@ -21,10 +21,12 @@ python-dotenv = "^1.0.1"
 couchbase = "^4.3.0"
 
 # For building agents and hosting an agent server.
+# TODO (GLENN): prefect==3.0.0 currently breaks controlflow 0.8.2.
 langchain-core = ">=0.2.23"
-controlflow = "^0.8.2"
 fastapi = "^0.111.1"
 pydantic = "^2.8.2"
+prefect = "==3.0.0rc20"
+controlflow = "~0.8.2"
 
 # For building a sample agent interface.
 requests = "^2.32.3"
@@ -32,7 +34,7 @@ streamlit = "^1.36.0"
 
 # The Rosetta project (the front-facing parts)!
 rosetta = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }
-# rosetta = { path = PATH_TO_LOCAL_ROSETTA, develop = true }
+# rosetta = { path = PATH_TO_LOCAL_ROSETTA, extras = ["langchain"], develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"

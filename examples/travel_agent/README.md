@@ -2,25 +2,49 @@
 
 ## Setup
 
+### Rosetta Setup
+
+1. Ensure that you have `python3.11` and `poetry` installed.
+   ```bash
+   python3 -m pip install poetry
+   ```
+2. Clone this repository -- make sure that you have an SSH key setup!
+   ```bash
+   git clone git@github.com:couchbaselabs/rosetta-example.git
+   ```
+3. Navigate to this directory, and install the dependencies from `pyproject.toml`.
+   ```bash
+   cd examples/travel_agent
+   poetry install
+   ```
+4. You should now have the `rosetta` command line tool installed.
+   Test your installation by running the `rosetta` command.
+   ```bash
+   poetry shell
+   rosetta
+   ```
+   For the remainder of the commands in this README, we assume the current working directory is `examples/travel_agent`.
+
+### Couchbase Setup
 Now, we need some data in Couchbase!
 In the future, we will have a Docker image to simplify this setup.
 
 1. Create a Couchbase instance (either locally or on Capella).
 2. Load the `travel-sample` example in your Couchbase instance (under Settings -> Sample Buckets).
 3. Register your Couchbase connection string, username, and password in the `.env` file.
-4. Create a new collection called `travel-sample.inventory.article`.
-   ```sql
-   CREATE COLLECTION `travel-sample`.`inventory`.`article` IF NOT EXISTS;
-   ```
-5. Run the `ingest_blogs.py` setup script to generate embeddings and insert articles into the
-   `travel-sample.inventory.article` collection above.
+4. Run the `ingest_blogs.py` setup script to generate embeddings and insert articles into a new
+   `travel-sample.inventory.article` collection.
    ```bash
-   cd examples/travel_agent
    python3 setup/ingest_blogs.py
    ```
-6. Create a FTS index for the `travel-sample.inventory.article` collection and the field `vec`.
-   See the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html) for
-   instructions on how to do so using the UI (using the Search -> QUICK INDEX screen).
+5. Create a FTS index called `articles-index` for the `travel-sample.inventory.article` collection and the field `vec`.
+   For non-Capella instances, we provide the helper script below.
+   ```bash
+   python3 setup/create_index.py
+   ```
+   For Capella instances, see the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html)
+   for instructions on how to do so using the Capella UI (using the Search -> QUICK INDEX screen).
+
 
 ## Execution
 
@@ -43,22 +67,34 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    We must now "index" our tools for Rosetta to serve to ControlFlow for use in its agentic workflows.
    Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
-   cd examples/travel_agent
-   rosetta index tools
+   rosetta index tools --kind tool --include-dirty
+   rosetta publish --kind tool --bucket 'travel-sample'
    ```
    The local catalog, by default, will appear as `.out/tool_catalog.json`.
-   In the future, there will be an option to register / add your tools to Capella.
-3. Now that we have our tools available, our agent is ready to execute!
+   To publish these tools to a database and leverage the versioning capabilities of Rosetta, use the subsequent
+   `publish` command after running the `index` command. _(Note that this `publish` step isn't necessary to continue with
+   this tutorial.)_
+3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located (in our case, we just
+   have one).
+   ```bash
+   rosetta index prompts --kind prompt --include-dirty
+   rosetta publish --kind prompt --bucket 'travel-sample'
+   ```
+   Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
+   the `index` command). _(Note that this `publish` step isn't necessary to continue with this tutorial.)_
+4. Now that we have our tools available, our agent is ready to execute!
    Run the command below to start the agent server (via FastAPI and ControlFlow) and a dummy REST server for managing
    travel rewards.
    ```bash
-   cd examples/travel_agent
-   fastapi run services/agent_server.py --port 10000
-   fastapi run services/rewards_server.py --port 10001
+   fastapi run services/agent_server.py --port 10000 &
+   fastapi run services/rewards_server.py --port 10001 &
    ```
-4. With our servers up and running, let's now spin up a basic application to interact with our agent using a
+5. With our servers up and running, let's now spin up a basic application to interact with our agent using a
    ChatGPT-esque interface (via Streamlit).
    ```bash
-   cd examples/travel_agent
    streamlit run app.py
+   ```
+6. To stop the FastAPI servers spawned as background processes in step 4, run the command below.
+   ```bash
+   kill $(ps -ef | grep -E '\-\-port 1000[01]'  | awk '{print $2}')
    ```
