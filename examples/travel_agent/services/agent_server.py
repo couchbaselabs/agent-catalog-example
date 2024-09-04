@@ -4,7 +4,7 @@ import queue
 import threading
 import uuid
 
-from .agent_flow import run_flow
+from agent_flow import run_flow
 
 agent_server = fastapi.FastAPI()
 registry_lock = threading.Semaphore()
