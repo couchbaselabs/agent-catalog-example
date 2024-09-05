@@ -46,7 +46,9 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         return "Message sent to user."
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
-    travel_agent = controlflow.Agent(name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model))
+    travel_agent = controlflow.Agent(
+        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id)
+    )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         while True:
             # Request router: find out what the user wants to do.
@@ -167,17 +169,27 @@ def _build_recommender_task(
         # Part #4: format the plan in Markdown.
         format_travel_plan = controlflow.Task(
             objective="Format the flight plan into a document.",
-            instructions=(
-                "Use Markdown. Include the user location, travel destination, and flight plan. "
-                "Return this formatted plan to the user. "
-                "DO NOT proceed until you have returned this formatted plan to the user. "
-                "You are allowed to use the tool below more than once."
-            ),
+            instructions=("Use Markdown. Include the user location, travel destination, and flight plan. "),
             result_type=str,
-            tools=[talk_to_user],
+            context={
+                "user_location": get_user_location,
+                "travel_destination": get_recommended_destinations,
+                "flight_plan": find_source_to_dest_route,
+            },
             depends_on=[find_source_to_dest_route],
         )
-        return format_travel_plan
+
+        # Part #5: return this plan back to the user.
+        return_travel_plan = controlflow.Task(
+            objective="Return the formatted travel plan back to the user. "
+            "In the same message, ask if the travel plan looks okay to continue with."
+            "DO NOT return a message without the travel plan.",
+            result_type=None,
+            depends_on=[format_travel_plan],
+            context={"travel_plan": format_travel_plan},
+            tools=[talk_to_user],
+        )
+        return return_travel_plan
 
 
 def _build_rewards_task(provider: rosetta.Provider, parent_flow: controlflow.Flow, talk_to_user) -> controlflow.Task:

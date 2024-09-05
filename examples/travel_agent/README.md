@@ -18,7 +18,8 @@
    poetry install
    ```
 4. You should now have the `rosetta` command line tool installed.
-   Test your installation by running the `rosetta` command.
+   Test your installation by running the `rosetta` command (_the first run of this command downloads embedding models,
+   subsequent runs will be faster_).
    ```bash
    poetry shell
    rosetta
