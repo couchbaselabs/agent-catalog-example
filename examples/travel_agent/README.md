@@ -24,7 +24,13 @@
    poetry shell
    rosetta
    ```
-   For the remainder of the commands in this README, we assume the current working directory is `examples/travel_agent`.
+5. Copy the `.env.example` file into a `.env` file, and update the environment variables appropriately.
+   ```bash
+   cp .env.example .env
+   vi .env
+   ```
+
+For the remainder of the commands in this README, we assume the current working directory is `examples/travel_agent`.
 
 ### Couchbase Setup
 Now, we need some data in Couchbase!
@@ -68,7 +74,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    We must now "index" our tools for Rosetta to serve to ControlFlow for use in its agentic workflows.
    Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
-   rosetta index tools --kind tool --include-dirty
+   rosetta index tools --kind tool
    rosetta publish --kind tool --bucket 'travel-sample'
    ```
    The local catalog, by default, will appear as `.out/tool_catalog.json`.
@@ -78,7 +84,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
 3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located (in our case, we just
    have one).
    ```bash
-   rosetta index prompts --kind prompt --include-dirty
+   rosetta index prompts --kind prompt
    rosetta publish --kind prompt --bucket 'travel-sample'
    ```
    Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
