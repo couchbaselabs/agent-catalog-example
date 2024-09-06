@@ -105,5 +105,6 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
 6. Navigate to http://localhost:8501 and try out the app!
 7. To stop the FastAPI + Prefect servers spawned as background processes in step 4, run the command below.
    ```bash
-   kill $(ps -ef | grep -E '(\-\-port 1000[01])|(prefect)'  | awk '{print $2}')
+   kill $(ps -ef | grep -E 'agent_server.py|prefect|(rewards_server.py)'  | awk '{print $2}')
    ```
+   _(If you still see `agent_server.py` still running, use `kill -9` instead of `kill`.)_
