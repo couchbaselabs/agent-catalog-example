@@ -87,6 +87,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    Run the command below to start the agent server (via FastAPI and ControlFlow) and a dummy REST server for managing
    travel rewards.
    ```bash
+   prefect server start &
    fastapi run services/agent_server.py --port 10000 &
    fastapi run services/rewards_server.py --port 10001 &
    ```
@@ -95,7 +96,8 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    ```bash
    streamlit run app.py
    ```
-6. To stop the FastAPI servers spawned as background processes in step 4, run the command below.
+6. Navigate to http://localhost:8501 and try out the app!
+7. To stop the FastAPI + Prefect servers spawned as background processes in step 4, run the command below.
    ```bash
-   kill $(ps -ef | grep -E '\-\-port 1000[01]'  | awk '{print $2}')
+   kill $(ps -ef | grep -E '(\-\-port 1000[01])|(prefect)'  | awk '{print $2}')
    ```

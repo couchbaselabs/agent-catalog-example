@@ -139,7 +139,7 @@ def _build_recommender_task(
         )
         get_closest_source_airport = controlflow.Task(
             objective="Locate the closet airport to the travel destination.",
-            instructions="Using the user location, return th¡¡e closet airport's IATA code.",
+            instructions="Using the user location, return the closet airport's IATA code.",
             result_type=str,
             depends_on=[get_user_location],
         )
@@ -169,7 +169,7 @@ def _build_recommender_task(
         # Part #4: format the plan in Markdown.
         format_travel_plan = controlflow.Task(
             objective="Format the flight plan into a document.",
-            instructions=("Use Markdown. Include the user location, travel destination, and flight plan. "),
+            instructions="Use Markdown. Include the user location, travel destination, and flight plan. ",
             result_type=str,
             context={
                 "user_location": get_user_location,

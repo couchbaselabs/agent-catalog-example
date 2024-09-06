@@ -5,6 +5,7 @@ import os
 import pathlib
 import rosetta.langchain
 import rosetta.provider
+import uuid
 
 dotenv.load_dotenv(pathlib.Path(__file__).parent.parent.parent / "examples" / "travel_agent" / ".env")
 
@@ -14,7 +15,7 @@ def test_flight_planning():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model)
+        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
 
     tool_provider = rosetta.provider.Provider(
@@ -38,7 +39,7 @@ def test_airport_checking():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model)
+        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
 
     tool_provider = rosetta.Provider(
@@ -57,7 +58,7 @@ def test_dest_recommendations():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model)
+        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
     tool_provider = rosetta.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
