@@ -55,7 +55,11 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     travel_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id)
+        name="Couchbase Travel Agent",
+        # The Rosetta LLM auditor (provided to LangChain models via langchain.audit) will bind all LLM messages to...
+        # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
+        # 2. a specific conversation thread / session (passed in via session=thread_id).
+        model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id),
     )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         # Below, we have a helper function which will fetch the version prompts + tools from the catalog.
