@@ -17,8 +17,16 @@ import controlflow.tools
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
+    # The Rosetta catalog provider serves versioned tools and prompts.
+    # For a comprehensive list of what parameters can be set here, see the class documentation.
+    # Parameters can also be set with environment variables (e.g., bucket = $ROSETTA_BUCKET).
     provider = rosetta.Provider(
+        # This 'decorator' parameter tells us how tools should be returned (in this case, as a LangChain tool).
         decorator=langchain_core.tools.StructuredTool.from_function,
+        # Below, we define parameters that are passed to tools at runtime.
+        # The 'keys' of this dictionary map to the values in various tool definitions (e.g., blogs_from_interests.yaml).
+        # The 'values' of this dictionary map to actual values required by the tool.
+        # In this case, we get the Couchbase connection string, username, and password from environment variables.
         secrets={
             "CB_CONN_STRING": os.getenv("CB_CONN_STRING"),
             "CB_USERNAME": os.getenv("CB_USERNAME"),

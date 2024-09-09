@@ -1,4 +1,5 @@
 # Travel Agent Example
+This directory contains all code required to run a sample travel agent whose tools and prompts are versioned with Rosetta.
 
 ## Setup
 
@@ -90,8 +91,8 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
    the `index` command). _(Note that this `publish` step isn't necessary to continue with this tutorial.)_
 4. Now that we have our tools available, our agent is ready to execute!
-   Run the command below to start the agent server (via FastAPI and ControlFlow) and a dummy REST server for managing
-   travel rewards.
+   Run the command below to start the agent servers (via Prefect and Controlflow on FastAPI) and a dummy REST server
+   for managing travel rewards.
    ```bash
    prefect server start &
    fastapi run services/agent_server.py --port 10000 &
@@ -105,6 +106,6 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
 6. Navigate to http://localhost:8501 and try out the app!
 7. To stop the FastAPI + Prefect servers spawned as background processes in step 4, run the command below.
    ```bash
-   kill $(ps -ef | grep -E 'agent_server.py|prefect|(rewards_server.py)'  | awk '{print $2}')
+   kill $(ps -ef | grep -E 'agent_server.py|prefect|(rewards_server.py)' | grep -v 'grep' | awk '{print $2}')
    ```
    _(If you still see `agent_server.py` still running, use `kill -9` instead of `kill`.)_
