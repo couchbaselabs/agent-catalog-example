@@ -82,8 +82,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    To publish these tools to a database and leverage the versioning capabilities of Rosetta, use the subsequent
    `publish` command after running the `index` command. _(Note that this `publish` step isn't necessary to continue with
    this tutorial.)_
-3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located (in our case, we just
-   have one).
+3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located.
    ```bash
    rosetta index prompts --kind prompt
    rosetta publish --kind prompt --bucket 'travel-sample'
@@ -106,6 +105,6 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
 6. Navigate to http://localhost:8501 and try out the app!
 7. To stop the FastAPI + Prefect servers spawned as background processes in step 4, run the command below.
    ```bash
-   kill $(ps -ef | grep -E 'agent_server.py|prefect|(rewards_server.py)' | grep -v 'grep' | awk '{print $2}')
+   kill $(ps -ef | grep -E 'agent_server.py|prefect|rewards_server.py' | grep -v 'grep' | awk '{print $2}')
    ```
    _(If you still see `agent_server.py` still running, use `kill -9` instead of `kill`.)_

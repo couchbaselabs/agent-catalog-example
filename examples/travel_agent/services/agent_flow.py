@@ -1,7 +1,8 @@
+import controlflow
+import controlflow.tools
 import dotenv
 import langchain_core.tools
 import langchain_openai
-import logging
 import os
 import pydantic
 import queue
@@ -9,13 +10,8 @@ import rosetta
 import rosetta.langchain
 import typing
 
-logger = logging.getLogger(__name__)
-# Load our OPENAI_API_KEY first...
+# Load our OPENAI_API_KEY.
 dotenv.load_dotenv()
-
-# ...before loading control flow.
-import controlflow
-import controlflow.tools
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
@@ -55,23 +51,15 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             return response
         return "Message sent to user."
 
-    chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
+    # The Rosetta LLM auditor will bind all LLM messages to...
+    # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
+    # 2. a specific conversation thread / session (passed in via session=thread_id).
+    # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
+    auditor = rosetta.auditor.Auditor(llm_name="gpt-4o")
+    chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0.0)
     travel_agent = controlflow.Agent(
         name="Couchbase Travel Agent",
-        # The Rosetta LLM auditor (provided to LangChain models via langchain.audit) will bind all LLM messages to...
-        # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
-        # 2. a specific conversation thread / session (passed in via session=thread_id).
-        model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id),
-        # model=rosetta.langchain.audit(
-        #     chat_model=chat_model,
-        #     auditor=rosetta.Auditor(
-        #         llm_name=chat_model._llm_type,
-        #         conn_string="http://localhost",
-        #         username=provider.secrets["CB_USERNAME"],
-        #         password=provider.secrets["CB_PASSWORD"],
-        #         bucket="travel-sample",
-        #     ),
-        # ),
+        model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         # Below, we have a helper function which will fetch the version prompts + tools from the catalog.
