@@ -78,5 +78,5 @@ target/
 .rosetta-activity/
 
 # .env files.
-examples/travel_agent/.env
+*/.env
 .env
