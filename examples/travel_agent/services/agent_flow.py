@@ -1,6 +1,7 @@
 import dotenv
 import langchain_core.tools
 import langchain_openai
+import logging
 import os
 import pydantic
 import queue
@@ -8,6 +9,7 @@ import rosetta
 import rosetta.langchain
 import typing
 
+logger = logging.getLogger(__name__)
 # Load our OPENAI_API_KEY first...
 dotenv.load_dotenv()
 
@@ -47,7 +49,18 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     travel_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id)
+        name="Couchbase Travel Agent",
+        # model=rosetta.langchain.audit(chat_model=chat_model, session=thread_id),
+        model=rosetta.langchain.audit(
+            chat_model=chat_model,
+            auditor=rosetta.Auditor(
+                llm_name=chat_model._llm_type,
+                conn_string="http://localhost",
+                username=provider.secrets["CB_USERNAME"],
+                password=provider.secrets["CB_PASSWORD"],
+                bucket="travel-sample",
+            ),
+        ),
     )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         while True:
