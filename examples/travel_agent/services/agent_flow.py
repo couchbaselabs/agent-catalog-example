@@ -55,6 +55,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
     # 2. a specific conversation thread / session (passed in via session=thread_id).
     # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
+    # Note: similar to a Rosetta provider, the parameters of a Rosetta auditor can be set with environment variables.
     auditor = rosetta.auditor.Auditor(llm_name="gpt-4o")
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0.0)
     travel_agent = controlflow.Agent(
