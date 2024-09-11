@@ -90,21 +90,14 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
    the `index` command). _(Note that this `publish` step isn't necessary to continue with this tutorial.)_
 4. Now that we have our tools available, our agent is ready to execute!
-   Run the command below to start the agent servers (via Prefect and Controlflow on FastAPI) and a dummy REST server
-   for managing travel rewards.
+   Run the command below to start the agent servers (via Prefect and Controlflow on FastAPI), a dummy REST server for
+   managing travel rewards, and a Streamlit app for a ChatGPT-esque interface.
    ```bash
-   prefect server start &
-   fastapi run services/agent_server.py --port 10000 &
-   fastapi run services/rewards_server.py --port 10001 &
+   ./quickstart.sh
    ```
-5. With our servers up and running, let's now spin up a basic application to interact with our agent using a
-   ChatGPT-esque interface (via Streamlit).
+5. Navigate to http://localhost:8501 and try out the app!
+6. To stop the FastAPI + Prefect servers spawned as background processes in step 4, use Ctrl-C.
+   If you still see left-over processes, run the command below.
    ```bash
-   streamlit run app.py
+   kill -9 $(ps -ef | grep -E 'agent_server.py|prefect|rewards_server.py|uvicorn' | grep -v 'grep' | awk '{print $2}')
    ```
-6. Navigate to http://localhost:8501 and try out the app!
-7. To stop the FastAPI + Prefect servers spawned as background processes in step 4, run the command below.
-   ```bash
-   kill $(ps -ef | grep -E 'agent_server.py|prefect|rewards_server.py' | grep -v 'grep' | awk '{print $2}')
-   ```
-   _(If you still see `agent_server.py` still running, use `kill -9` instead of `kill`.)_

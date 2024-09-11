@@ -1,0 +1,21 @@
+#!/bin/bash
+
+cd "$(dirname "${BASH_SOURCE[0]}")" || exit
+
+trap on_ctrl_c INT
+function on_ctrl_c() {
+    echo "Ctrl-C issued, killing spawned processes."
+    kill "$(ps -ef | grep -E 'agent_server.py|prefect|rewards_server.py|uvicorn' | grep -v 'grep' | awk '{print $2}')"
+}
+
+echo "Spawning new Prefect server."
+prefect server start &
+
+echo "Starting agent server."
+fastapi run services/agent_server.py --port 10000 &
+
+echo "Starting (dummy) rewards server."
+fastapi run services/rewards_server.py --port 10001 &
+
+echo "Starting UI."
+streamlit run app.py

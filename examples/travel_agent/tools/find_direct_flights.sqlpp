@@ -46,4 +46,5 @@ WHERE  r.sourceairport = $source_airport AND
 SELECT VALUE { "airlines"     : [ r.airline ],
                "layovers"     : [],
                "from_airport" : r.sourceairport,
-               "to_airport"   : r.destinationairport };
+               "to_airport"   : r.destinationairport }
+LIMIT  10;
