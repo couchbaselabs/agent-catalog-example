@@ -58,7 +58,7 @@ In the future, we will have a Docker image to simplify this setup.
 
 ## Execution
 
-We are now ready to start using Rosetta and ControlFlow / LangGraph to build agents!
+We are now ready to start using Rosetta and ControlFlow to build agents!
 
 1. In the `.env` file, add your OpenAI API key:
    ```
