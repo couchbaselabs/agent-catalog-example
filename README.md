@@ -4,7 +4,7 @@ Sample agentic workflows built using Rosetta.
 
 ## For Users
 
-Navigate to the specific example (e.g., `examples/travel_agent`) you are interested in! :-)
+Navigate to the specific example (e.g., `travel_agent`) you are interested in! :-)
 
 ## For Developers
 

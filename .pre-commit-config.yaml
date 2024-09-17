@@ -42,6 +42,6 @@ repos:
     rev: '1.8.0'
     hooks:
     - id: poetry-check
-      args: ["-C", "examples/travel_agent"]
+      args: ["-C", "travel_agent"]
     - id: poetry-lock
-      args: ["-C", "examples/travel_agent"]
+      args: ["-C", "travel_agent"]

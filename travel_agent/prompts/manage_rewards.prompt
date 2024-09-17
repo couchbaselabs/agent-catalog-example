@@ -8,6 +8,9 @@ description: Instructions on how to manage a user's travel rewards.
 tools:
   - name: create_new_member_create_post
   - name: get_member_rewards_rewards__member_id__get
+
+annotations:
+  framework: "controlflow"
 ---
 Help the user with their rewards.
 Do not hallucinate, always use the tools you were given.

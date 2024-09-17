@@ -32,7 +32,6 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         },
     )
 
-    # Note: a limitation of ControlFlow is that this function MUST be called talk_to_user.
     def talk_to_user(message: str, get_response: bool = True) -> str:
         """
         Send a message to the human user and optionally wait for a response. If `get_response` is True, the function
@@ -63,7 +62,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
-        # Below, we have a helper function which will fetch the version prompts + tools from the catalog.
+        # Below, we have a helper function which will fetch the versioned prompts + tools from the catalog.
         def Task(prompt_name: str, **kwargs) -> controlflow.Task:
             with travel_flow:
                 prompt: rosetta.provider.Prompt = provider.get_prompt_for(name=prompt_name)

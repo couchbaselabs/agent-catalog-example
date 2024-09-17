@@ -4,6 +4,9 @@ record_kind: raw_prompt
 name: format_flight_plan
 
 description: Instructions on how to format a travel itinerary.
+
+annotations:
+  framework: "controlflow"
 ---
 Objective:
 Format the flight plan into a document.

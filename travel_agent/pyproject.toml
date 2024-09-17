@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "travel-example"
 version = "0.1.0"
-description = "A travel agent example built with Rosetta and ControlFlow."
+description = "A travel agent example built with Rosetta."
 repository = "https://github.com/couchbaselabs/rosetta-example"
 authors = [
     "Glenn Galvizo <glenn.galvizo@couchbase.com>"
@@ -20,13 +20,8 @@ sentence-transformers = "^3.0.1"
 python-dotenv = "^1.0.1"
 couchbase = "^4.3.0"
 
-# For building agents and hosting an agent server.
-# TODO (GLENN): prefect==3.0.0 currently breaks controlflow 0.8.2.
-langchain-core = ">=0.2.23"
+# For hosting servers (in general).
 fastapi = "^0.111.1"
-pydantic = "^2.8.2"
-prefect = "==3.0.0rc20"
-controlflow = "~0.8.2"
 
 # For building a sample agent interface.
 requests = "^2.32.3"
@@ -38,6 +33,14 @@ rosetta = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langcha
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"
+
+[tool.poetry.group.controlflow]
+optional = true
+
+# TODO (GLENN): prefect==3.0.0 currently breaks controlflow 0.8.2.
+[tool.poetry.group.controlflow.dependencies]
+prefect = "==3.0.0rc20"
+controlflow = "~0.8.2"
 
 [tool.ruff]
 line-length = 120

@@ -7,6 +7,9 @@ description: Instructions on how to locate an airport from a given location.
 
 tools:
   - name: check_if_airport_exists
+
+annotations:
+  framework: "controlflow"
 ---
 Using the given location, return the closet airport's IATA code.
 You must use a tool to verify that the IATA code is valid.
