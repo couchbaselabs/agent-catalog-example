@@ -64,7 +64,7 @@ We are now ready to start using Rosetta and ControlFlow to build agents!
    ```
    OPENAI_API_KEY=[INCLUDE KEY HERE]
    ```
-2. We have defined 24 tools (6 "real" tools and 18 "dummy" tools) in the `travel_tools` directory spread across files
+2. We have defined 24 tools (6 "real" tools and 18 "dummy" tools) in the `tools` directory spread across files
    of multiple types (`.py`, `.sqlpp`, `.yaml`):
    ```bash
    ls tools
