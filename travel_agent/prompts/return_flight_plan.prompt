@@ -7,9 +7,6 @@ description: Instructions on how to return the flight plan back to the user.
 
 annotations:
   framework: "controlflow"
-
-tools:
-- query: "sending a message to the user"
 ---
 Return the formatted travel plan back to the user.
 In the same message, ask if the travel plan looks okay to continue with.

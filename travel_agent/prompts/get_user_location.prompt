@@ -7,8 +7,5 @@ description: Instructions on how to ask a user for their current location.
 
 annotations:
   framework: "controlflow"
-
-tools:
-  - query: "sending a message to the user"
 ---
 Ask the user for their location.

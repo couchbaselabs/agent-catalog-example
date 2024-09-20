@@ -7,8 +7,5 @@ description: Instructions on what to do when you cannot identify the user intent
 
 annotations:
   framework: "controlflow"
-
-tools:
-- query: "sending a message to the user"
 ---
 Tell the user that you cannot help them with their request and explain why.

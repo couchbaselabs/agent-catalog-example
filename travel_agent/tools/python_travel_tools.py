@@ -5,8 +5,6 @@ import rosetta
 
 # Tools in Rosetta are decorated with `@rosetta.tool`.
 # Python tools, at a minimum, must contain a docstring (the string immediately below the function name line).
-# Note that this is a very simple tool that does not have any external dependencies (i.e., those from other modules).
-# For an example of a tool that does have external dependencies, see `talk_to_user_tool.py`.
 @rosetta.tool
 def check_if_airport_exists(aita_code: str) -> bool:
     """Check if the given AITA code is valid (i.e., represents an airline)."""
