@@ -14,6 +14,7 @@ import typing
 dotenv.load_dotenv()
 
 
+# Note: the to_user_queue and from_user_queue are used by the talk_to_user tool.
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
     # The Rosetta catalog provider serves versioned tools and prompts.
     # For a comprehensive list of what parameters can be set here, see the class documentation.
@@ -32,31 +33,14 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         },
     )
 
-    def talk_to_user(message: str, get_response: bool = True) -> str:
-        """
-        Send a message to the human user and optionally wait for a response. If `get_response` is True, the function
-        will return the user's response, otherwise it will return a simple confirmation. Do not send the user
-        concurrent messages that require responses, as this will cause confusion.
-
-        You may need to ask the human about multiple tasks at once. Consolidate your questions into a single message.
-        For example, if Task 1 requires information X and Task 2 needs information Y, send a single message that
-        naturally asks for both X and Y.
-        """
-        to_user_queue.join()
-        to_user_queue.put(message)
-        if get_response:
-            response = from_user_queue.get()
-            from_user_queue.task_done()
-            return response
-        return "Message sent to user."
-
     # The Rosetta LLM auditor will bind all LLM messages to...
     # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
     # 2. a specific conversation thread / session (passed in via session=thread_id).
-    # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
     # Note: similar to a Rosetta provider, the parameters of a Rosetta auditor can be set with environment variables.
     auditor = rosetta.auditor.Auditor(llm_name="gpt-4o")
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0.0)
+
+    # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
     travel_agent = controlflow.Agent(
         name="Couchbase Travel Agent",
         model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
@@ -68,8 +52,17 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
                 prompt: rosetta.provider.Prompt = provider.get_prompt_for(name=prompt_name)
                 if prompt is None:
                     raise RuntimeError(f"Prompt not found with the name {prompt_name}!")
-                tools = prompt.tools + [talk_to_user] if prompt.tools is not None else [talk_to_user]
-                return controlflow.Task(objective=prompt.prompt, tools=tools, **kwargs)
+
+                if kwargs["context"] is None:
+                    context = dict()
+                context["to_user_queue"] = to_user_queue
+                context["from_user_queue"] = from_user_queue
+
+                return controlflow.Task(
+                    objective=prompt.prompt,
+                    tools=prompt.tools,
+                    **{k: v for k, v in kwargs.items() if k != "context"},
+                )
 
         while True:
             # Request router: find out what the user wants to do.
@@ -84,11 +77,11 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             user_intent = get_user_intent.result
             match user_intent:
                 case "travel rewards":
-                    next_task = _build_rewards_task(Task)
+                    next_task = Task(prompt_name="manage_rewards")
                 case "trip planning":
                     next_task = _build_recommender_task(Task)
                 case "about agency questions":
-                    next_task = _build_faq_answers_task(Task)
+                    next_task = Task(prompt_name="answer_questions", result_type=str)
                 case "not applicable":
                     next_task = Task(prompt_name="negative_intent")
                 case _:
@@ -169,11 +162,3 @@ def _build_recommender_task(Task: typing.Callable[..., controlflow.Task]) -> con
         context={"travel_plan": format_travel_plan},
     )
     return return_travel_plan
-
-
-def _build_rewards_task(Task: typing.Callable[..., controlflow.Task]) -> controlflow.Task:
-    return Task(prompt_name="manage_rewards")
-
-
-def _build_faq_answers_task(Task: typing.Callable[..., controlflow.Task]) -> controlflow.Task:
-    return Task(prompt_name="answer_questions", result_type=str)

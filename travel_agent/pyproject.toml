@@ -26,6 +26,7 @@ fastapi = "^0.111.1"
 # For building a sample agent interface.
 requests = "^2.32.3"
 streamlit = "^1.36.0"
+streamlit-feedback = "^0.1.3"
 
 # The Rosetta project (the front-facing parts)!
 rosetta = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }

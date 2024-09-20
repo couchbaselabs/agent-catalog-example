@@ -7,6 +7,9 @@ description: Instructions on what to do after addressing a user's request.
 
 annotations:
   framework: "controlflow"
+
+tools:
+  - query: "sending a message to the user"
 ---
 Ask the user if they want to continue.
 If they say yes, then return true.

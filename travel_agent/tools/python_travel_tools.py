@@ -3,6 +3,10 @@ import re
 import rosetta
 
 
+# Tools in Rosetta are decorated with `@rosetta.tool`.
+# Python tools, at a minimum, must contain a docstring (the string immediately below the function name line).
+# Note that this is a very simple tool that does not have any external dependencies (i.e., those from other modules).
+# For an example of a tool that does have external dependencies, see `talk_to_user_tool.py`.
 @rosetta.tool
 def check_if_airport_exists(aita_code: str) -> bool:
     """Check if the given AITA code is valid (i.e., represents an airline)."""
@@ -68,11 +72,8 @@ def check_if_airport_exists(aita_code: str) -> bool:
     )
 
 
-#
-# Below, we define a collection of dummy tools.
-#
-
-
+# It is highly recommended to use Pydantic models to define the input and output types of your tools.
+# The Pydantic models below belong to dummy tools, but illustrate what example travel-tools might look like.
 class FlightDeal(pydantic.BaseModel):
     airline: str
     price: float

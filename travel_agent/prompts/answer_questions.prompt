@@ -7,6 +7,9 @@ description: Instructions on how to answer what seems like a frequently asked qu
 
 annotations:
   framework: "controlflow"
+
+tools:
+  - query: "sending a message to the user"
 ---
 Answer frequently asked questions above our travel agency.
 Hallucinate as much as you'd like, just make it sound real but keep a professional persona.

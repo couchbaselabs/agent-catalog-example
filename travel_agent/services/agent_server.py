@@ -1,6 +1,7 @@
 import dataclasses
 import fastapi
 import queue
+import rosetta
 import threading
 import uuid
 
@@ -16,6 +17,17 @@ class FlowHandle:
     flow_thread: threading.Thread
     to_user_queue: queue.Queue
     from_user_queue: queue.Queue
+
+
+@agent_server.post("/feedback/{thread_id}")
+def feedback(thread_id: str, content: str):
+    auditor = rosetta.Auditor(llm_name="gpt-4o")
+    auditor.accept(
+        role=rosetta.auditor.Role.Feedback,
+        content=content,
+        session=thread_id,
+    )
+    return fastapi.Response(status_code=200)
 
 
 @agent_server.post("/start")
