@@ -5,7 +5,11 @@ import rosetta
 import threading
 import uuid
 
-from agent_flow import run_flow
+# Note: this is a bit of hack, but some IDEs (like PyCharm) require the relative import when using FastAPI.
+try:
+    from agent_flow import run_flow
+except ModuleNotFoundError:
+    from .agent_flow import run_flow
 
 agent_server = fastapi.FastAPI()
 registry_lock = threading.Semaphore()
