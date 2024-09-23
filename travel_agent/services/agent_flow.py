@@ -58,10 +58,11 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             naturally asks for both X and Y.
             """
             to_user_queue.join()
+            auditor.accept(role=rosetta.auditor.Role.Assistant, content=message, session=thread_id)
             to_user_queue.put(message)
             if get_response:
                 response = from_user_queue.get()
-                auditor.accept(rosetta.auditor.Role.Human, response, session=thread_id)
+                auditor.accept(role=rosetta.auditor.Role.Human, content=response, session=thread_id)
                 from_user_queue.task_done()
                 return response
             return "Message sent to user."
