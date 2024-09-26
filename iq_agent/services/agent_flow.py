@@ -74,7 +74,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         while True:
             # Request router: find out what the user wants to do.
             get_user_intent = Task(
-                prompt_name="get_user_query",
+                prompt_name="get_user_intent",
                 result_type=str,
             )
             travel_flow.add_task(get_user_intent)
@@ -82,7 +82,6 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 
             # Decide the next task.
             user_natural_language_query = get_user_intent.result
-            _build_rewards_task(user_intent)
             next_task = _build_NL2SQL_task(Task, user_natural_language_query)
             travel_flow.run()
             if next_task.is_failed():
@@ -101,7 +100,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
                 break
 
 
-def _build_NL2SQL_task(Task: typing.Callable[..., controlflow.Task], str: user_natural_language_query) -> controlflow.Task:
+def _build_NL2SQL_task(Task: typing.Callable[..., controlflow.Task], user_natural_language_query: str) -> controlflow.Task:
     return Task(
         prompt_name="generate_sql_query_and_execute",
         context={
@@ -114,8 +113,7 @@ def _build_NL2SQL_task(Task: typing.Callable[..., controlflow.Task], str: user_n
             "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjczNDMxMzUsImlkIjoicng0aHFjOUU0SnBNSGNjSUprUjVhQ0ZNUExwY0N1ZUFSdnl0RUI3LVI5TDhrRjQ5LUo0emh0RU95Ym5NdTBqTCIsImtpZCI6IjUzOUVDMjc5LTc3MUQtNDM0Ni05RjNGLTI4Mzg0ODlGRTNGMyIsInZlciI6MX0.eEC6B3pF5LOJDgTUnNu03fXBXajzo_5IuSkva8jmkQI", 
             "capella_address": "https://api.dev.nonprod-project-avengers.com", 
             "org_id": "6af08c0a-8cab-4c1c-b257-b521575c16d0",
-            "natural_language_query": user_natural_language_query},
-        result_type=typing.List[typing.Dict],
+            "natural_language_query": user_natural_language_query}
     )
 
     
