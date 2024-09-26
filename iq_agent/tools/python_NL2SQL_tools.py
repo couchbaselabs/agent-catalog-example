@@ -1,12 +1,16 @@
 import rosetta
 
 @rosetta.tool
-def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_token, capella_address, org_id):
-    import requests, json, traceback
+def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_token, capella_address, org_id, natural_query):
+    import requests, json, traceback, logging
+    from datetime import datetime, timedelta
     from couchbase.auth import PasswordAuthenticator, CertificateAuthenticator
     from couchbase.cluster import Cluster
     from couchbase.options import (ClusterOptions, ClusterTimeoutOptions,QueryOptions)
     from couchbase.exceptions import CouchbaseException
+
+
+    logger = logging.getLogger()
 
     def extract_schema(bucket, collection, scope, username, password, cluster_url) -> dict:
         """
@@ -49,8 +53,8 @@ def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_toke
                 field_types[field] = data['type']
             return field_types
         except Exception as ex:
-        logger.error("Error extracting schema :", ex)
-        return {}
+            logger.error("Error extracting schema :", ex)
+            return {}
 
 
     url = f"{capella_address}/v2/organizations/{org_id}/integrations/iq/openai/chat/completions"
@@ -68,7 +72,7 @@ def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_toke
         "messages": [
             {
                 "role": "user",
-                "content": f"Generate ONLY a valid SQL++ query based on the following natural language prompt. Return the query JSON with field as query, without any natural language text and WITHOUT MARKDOWN syntax in the query.\n\nNatural language prompt: \n\"\"\"\n{req.natural_query}\n\"\"\"\n .If the natural language prompt can be used to generate a query:\n- query using follwing bucket - {req.bucket}, scope - {req.scope} and collection - {req.collection}. Heres the schema {schema}.\n. For queries involving SELECT statements use ALIASES LIKE the following EXAMPLE: `SELECT a.* FROM <collection> as a LIMIT 10;` instead of `SELECT * FROM <collection> LIMIT 10;` STRICTLY USE A.* OR SOMETHING SIMILAR \nIf the natural language prompt cannot be used to generate a query, write an error message and return as JSON with field as error."
+                "content": f"Generate ONLY a valid SQL++ query based on the following natural language prompt. Return the query JSON with field as query, without any natural language text and WITHOUT MARKDOWN syntax in the query.\n\nNatural language prompt: \n\"\"\"\n{natural_query}\n\"\"\"\n .If the natural language prompt can be used to generate a query:\n- query using follwing bucket - {bucket}, scope - {scope} and collection - {collection}. Heres the schema {schema}.\n. For queries involving SELECT statements use ALIASES LIKE the following EXAMPLE: `SELECT a.* FROM <collection> as a LIMIT 10;` instead of `SELECT * FROM <collection> LIMIT 10;` STRICTLY USE A.* OR SOMETHING SIMILAR \nIf the natural language prompt cannot be used to generate a query, write an error message and return as JSON with field as error."
             }
         ],
         "initMessages": [
@@ -96,6 +100,7 @@ def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_toke
         #API call to LLM
         res = requests.post(url, headers=headers, json=payload)
         res_json = res.json()
+        print(res_json)
         res_dict = json.loads(res_json['choices'][0]['message']['content'])
 
         #Check if the query is generated 
@@ -130,7 +135,22 @@ def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_toke
             "message":f"Error connecting to couchbase : {e}"
         }
 
+    data = []
     if natural_language_query:
         result = cluster.query(natural_language_query)
-        return result
+        for row in result:
+        # each row is an instance of the query call
+            try:
+                data.append(row)
+            except KeyError:
+                print("Row does not contain 'name' key")
+    return data
     
+
+
+if __name__ == "__main__":
+    data = iq_tool("travel-sample", "airport", "inventory", "Administrator", "password", "couchbase://127.0.0.1",
+     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjczNDMxMzUsImlkIjoicng0aHFjOUU0SnBNSGNjSUprUjVhQ0ZNUExwY0N1ZUFSdnl0RUI3LVI5TDhrRjQ5LUo0emh0RU95Ym5NdTBqTCIsImtpZCI6IjUzOUVDMjc5LTc3MUQtNDM0Ni05RjNGLTI4Mzg0ODlGRTNGMyIsInZlciI6MX0.eEC6B3pF5LOJDgTUnNu03fXBXajzo_5IuSkva8jmkQI",
+     "https://api.dev.nonprod-project-avengers.com",  "6af08c0a-8cab-4c1c-b257-b521575c16d0",
+     "find 5 flights in the united states")
+    print(data)

@@ -83,17 +83,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             # Decide the next task.
             user_natural_language_query = get_user_intent.result
             _build_rewards_task(user_intent)
-            match user_intent:
-                case "travel rewards":
-                    next_task = _build_rewards_task(Task)
-                case "trip planning":
-                    next_task = _build_recommender_task(Task)
-                case "about agency questions":
-                    next_task = _build_faq_answers_task(Task)
-                case "not applicable":
-                    next_task = Task(prompt_name="negative_intent")
-                case _:
-                    raise RuntimeError("Bad response returned from agent!")
+            next_task = _build_NL2SQL_task(Task, user_natural_language_query)
             travel_flow.run()
             if next_task.is_failed():
                 Task(prompt_name="handle_failed_task")
@@ -114,7 +104,17 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
 def _build_NL2SQL_task(Task: typing.Callable[..., controlflow.Task], str: user_natural_language_query) -> controlflow.Task:
     return Task(
         prompt_name="generate_sql_query_and_execute",
-        context={"natural_language_query": user_natural_language_query},
+        context={
+            "bucket": "travel-sample",
+            "collection": "airport",
+            "scope": "inventory",
+            "username": "Administrator", 
+            "password": "password", 
+            "cluster_url": "couchbase://127.0.0.1", 
+            "jwt_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjczNDMxMzUsImlkIjoicng0aHFjOUU0SnBNSGNjSUprUjVhQ0ZNUExwY0N1ZUFSdnl0RUI3LVI5TDhrRjQ5LUo0emh0RU95Ym5NdTBqTCIsImtpZCI6IjUzOUVDMjc5LTc3MUQtNDM0Ni05RjNGLTI4Mzg0ODlGRTNGMyIsInZlciI6MX0.eEC6B3pF5LOJDgTUnNu03fXBXajzo_5IuSkva8jmkQI", 
+            "capella_address": "https://api.dev.nonprod-project-avengers.com", 
+            "org_id": "6af08c0a-8cab-4c1c-b257-b521575c16d0",
+            "natural_language_query": user_natural_language_query},
         result_type=typing.List[typing.Dict],
     )
 
