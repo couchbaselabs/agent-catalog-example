@@ -26,12 +26,18 @@ class Task(controlflow.Task):
 
 class TaskFactory:
     def __init__(
-        self, provider: rosetta.Provider, auditor: rosetta.Auditor, session: str, tools: list[typing.Any] = None
+        self,
+        provider: rosetta.Provider,
+        auditor: rosetta.Auditor,
+        session: str,
+        tools: list[typing.Any] = None,
+        agent: controlflow.Agent = None,
     ):
         self.provider: rosetta.Provider = provider
         self.auditor: rosetta.Auditor = auditor
         self.session: str = session
         self.tools: list[typing.Any] = tools if tools is not None else list()
+        self.agent: controlflow.Agent = agent
 
     def build(self, prompt_name: str, **kwargs) -> controlflow.Task:
         # Rosetta manages prompts and the tools assigned to these prompts.
@@ -46,6 +52,8 @@ class TaskFactory:
             del kwargs_copy["tools"]
         if "objective" in kwargs_copy:
             del kwargs_copy["objective"]
+        if "agents" not in kwargs_copy and self.agent is not None:
+            kwargs_copy["agents"] = [self.agent]
         return Task(
             node_name=prompt_name,
             auditor=self.auditor,

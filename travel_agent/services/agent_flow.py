@@ -61,6 +61,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         provider=provider,
         auditor=auditor,
         session=thread_id,
+        agent=travel_agent,
         tools=[build_interaction_tool(to_user_queue, from_user_queue, auditor, thread_id)],
     )
     while True:
