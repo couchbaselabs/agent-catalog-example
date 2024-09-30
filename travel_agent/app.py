@@ -5,15 +5,22 @@ import os
 import requests.adapters
 import streamlit
 import streamlit_feedback
+import typing
 
 
-def feedback_callback(feedback: dict):
-    f_response = requests.post(
-        streamlit.session_state.feedback_url,
-        params={"content": json.dumps(feedback)},
-    )
-    assert f_response.status_code == http.HTTPStatus.OK
-    streamlit.toast("Feedback received. Thank you!")
+def feedback_callback_factory(assistant_message: str):
+    def feedback_callback(feedback: typing.Dict):
+        feedback_text = json.dumps(feedback)
+        f_response = requests.post(
+            streamlit.session_state.feedback_url,
+            params={
+                "content": "User has given the feedback " + feedback_text + " for the message: " + assistant_message
+            },
+        )
+        assert f_response.status_code == http.HTTPStatus.OK
+        streamlit.toast("Feedback received. Thank you!")
+
+    return feedback_callback
 
 
 # Our first-time actions: initialize a conversation with our agent.
@@ -50,8 +57,10 @@ for i, message in enumerate(streamlit.session_state.messages):
         streamlit.markdown(message["content"])
 
     # We need to keep track of the feedback our user has given.
-    if message["role"] == "assistant" and i > 1:
-        streamlit_feedback.streamlit_feedback(feedback_type="faces", on_submit=feedback_callback, key=str(i))
+    if message["role"] == "assistant":
+        streamlit_feedback.streamlit_feedback(
+            feedback_type="faces", on_submit=feedback_callback_factory(message["content"]), key=str(i)
+        )
 
 # Read in some user input...
 if user_input := streamlit.chat_input():

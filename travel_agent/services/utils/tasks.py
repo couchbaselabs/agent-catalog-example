@@ -1,0 +1,56 @@
+import controlflow
+import controlflow.tasks.task
+import rosetta
+import typing
+
+
+class Task(controlflow.Task):
+    _accept_status: typing.Callable = None
+
+    def __init__(self, node_name: str, auditor: rosetta.Auditor, session: str, **kwargs):
+        super(Task, self).__init__(**kwargs)
+        self._accept_status = lambda status, direction: auditor.move(
+            node_name=node_name, direction=direction, session=session, content={"status": status.value}
+        )
+
+    def set_status(self, status: controlflow.tasks.task.TaskStatus):
+        if status in controlflow.tasks.task.INCOMPLETE_STATUSES:
+            direction = "enter"
+        elif status in controlflow.tasks.task.COMPLETE_STATUSES:
+            direction = "exit"
+        else:
+            raise ValueError(f"Invalid status encountered: {status}")
+        super(Task, self).set_status(status)
+        self._accept_status(status, direction)
+
+
+class TaskFactory:
+    def __init__(
+        self, provider: rosetta.Provider, auditor: rosetta.Auditor, session: str, tools: list[typing.Any] = None
+    ):
+        self.provider: rosetta.Provider = provider
+        self.auditor: rosetta.Auditor = auditor
+        self.session: str = session
+        self.tools: list[typing.Any] = tools if tools is not None else list()
+
+    def build(self, prompt_name: str, **kwargs) -> controlflow.Task:
+        # Rosetta manages prompts and the tools assigned to these prompts.
+        prompt: rosetta.provider.Prompt = self.provider.get_prompt_for(name=prompt_name)
+        if prompt is None:
+            raise RuntimeError(f"Prompt not found with the name {prompt_name}!")
+        tools = prompt.tools + self.tools if prompt.tools is not None else self.tools
+
+        # The remainder of this function is dependent on ControlFlow (the agent framework).
+        kwargs_copy = kwargs.copy()
+        if "tools" in kwargs_copy:
+            del kwargs_copy["tools"]
+        if "objective" in kwargs_copy:
+            del kwargs_copy["objective"]
+        return Task(
+            node_name=prompt_name,
+            auditor=self.auditor,
+            session=self.session,
+            objective=prompt.prompt,
+            tools=tools,
+            **kwargs_copy,
+        )

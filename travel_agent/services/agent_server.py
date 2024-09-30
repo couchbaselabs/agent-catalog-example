@@ -27,7 +27,7 @@ class FlowHandle:
 def feedback(thread_id: str, content: str):
     auditor = rosetta.Auditor(llm_name="gpt-4o")
     auditor.accept(
-        role=rosetta.auditor.Role.Feedback,
+        kind=rosetta.auditor.Kind.Feedback,
         content=content,
         session=thread_id,
     )
