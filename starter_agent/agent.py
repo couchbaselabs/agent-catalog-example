@@ -44,7 +44,6 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
         name="Started Agent",
         model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
-    flow = controlflow.Flow(default_agent=starter_agent, thread_id=thread_id)
 
     # Below, we have a helper class that removes some of the boilerplate for using Rosetta + ControlFlow.
     task_factory = TaskFactory(
@@ -58,4 +57,4 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     while True:
         # Write your agent logic here (note that start_conversation doesn't exist).
         start_conversation = task_factory.build(prompt_name="start_conversation")
-        controlflow.run_tasks([start_conversation], flow=flow)
+        start_conversation.run()
