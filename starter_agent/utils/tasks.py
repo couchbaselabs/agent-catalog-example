@@ -62,3 +62,6 @@ class TaskFactory:
             tools=tools,
             **kwargs_copy,
         )
+
+    def run(self, prompt_name: str, **kwargs):
+        return self.build(prompt_name=prompt_name, **kwargs).run()
