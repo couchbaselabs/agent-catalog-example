@@ -6,14 +6,22 @@ import threading
 import uuid
 
 # Note: this is a bit of hack, but some IDEs (like PyCharm) require the relative import when using FastAPI.
+# try:
+#     from simple_iq_agent import run_flow
+# except ModuleNotFoundError:
+#     from .simple_iq_agent import run_flow
+
 try:
-    from agent_flow import run_flow
+    from simple_iq_agent import run_flow
+    from simple_iq_agent_using_base_agent import SimpleIQAgent
 except ModuleNotFoundError:
-    from .agent_flow import run_flow
+    from .simple_iq_agent_using_base_agent import SimpleIQAgent
+    from .simple_iq_agent import run_flow
 
 agent_server = fastapi.FastAPI()
 registry_lock = threading.Semaphore()
 flow_registry = dict()
+ig_agent = SimpleIQAgent()
 
 
 @dataclasses.dataclass

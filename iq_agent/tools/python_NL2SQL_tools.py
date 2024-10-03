@@ -1,4 +1,4 @@
-import rosetta
+import rosetta, os
 
 @rosetta.tool
 def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_token, capella_address, org_id, natural_query):
@@ -138,20 +138,22 @@ def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_toke
 
     data = []
     if natural_language_query:
-        result = cluster.query(natural_language_query)
-        for row in result:
-        # each row is an instance of the query call
-            try:
+        try:
+            result = cluster.query(natural_language_query)
+            for row in result:
                 data.append(row)
-            except KeyError:
-                print("Row does not contain 'name' key")
+            # each row is an instance of the query call
+        except:
+            None
     return data
     
 
 
 if __name__ == "__main__":
+    print(os.getenv("CB_JWT_TOKEN"), "token")
+
     data = iq_tool("travel-sample", "airport", "inventory", "Administrator", "password", "couchbase://127.0.0.1",
-     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MjczNDMxMzUsImlkIjoicng0aHFjOUU0SnBNSGNjSUprUjVhQ0ZNUExwY0N1ZUFSdnl0RUI3LVI5TDhrRjQ5LUo0emh0RU95Ym5NdTBqTCIsImtpZCI6IjUzOUVDMjc5LTc3MUQtNDM0Ni05RjNGLTI4Mzg0ODlGRTNGMyIsInZlciI6MX0.eEC6B3pF5LOJDgTUnNu03fXBXajzo_5IuSkva8jmkQI",
+    os.getenv("CB_JWT_TOKEN"),
      "https://api.dev.nonprod-project-avengers.com",  "6af08c0a-8cab-4c1c-b257-b521575c16d0",
      "find 5 flights in the united states")
     print(data)
