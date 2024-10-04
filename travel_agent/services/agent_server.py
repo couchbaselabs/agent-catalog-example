@@ -1,4 +1,4 @@
-import agent_catalog
+import agentc
 import dataclasses
 import fastapi
 import queue
@@ -25,9 +25,9 @@ class FlowHandle:
 
 @agent_server.post("/feedback/{thread_id}")
 def feedback(thread_id: str, content: str):
-    auditor = agent_catalog.Auditor(llm_name="gpt-4o")
+    auditor = agentc.Auditor(llm_name="gpt-4o")
     auditor.accept(
-        kind=agent_catalog.auditor.Kind.Feedback,
+        kind=agentc.auditor.Kind.Feedback,
         content=content,
         session=thread_id,
     )
