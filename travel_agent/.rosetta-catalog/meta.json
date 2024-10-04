@@ -1,0 +1,5 @@
+{
+    "catalog_schema_version": "0.0.0",
+    "embedding_model": "sentence-transformers/all-MiniLM-L12-v2",
+    "lib_version": "v0.0.0-0-g0"
+}

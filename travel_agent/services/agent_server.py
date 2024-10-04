@@ -1,7 +1,7 @@
+import agent_catalog
 import dataclasses
 import fastapi
 import queue
-import rosetta
 import threading
 import uuid
 
@@ -25,9 +25,9 @@ class FlowHandle:
 
 @agent_server.post("/feedback/{thread_id}")
 def feedback(thread_id: str, content: str):
-    auditor = rosetta.Auditor(llm_name="gpt-4o")
+    auditor = agent_catalog.Auditor(llm_name="gpt-4o")
     auditor.accept(
-        kind=rosetta.auditor.Kind.Feedback,
+        kind=agent_catalog.auditor.Kind.Feedback,
         content=content,
         session=thread_id,
     )

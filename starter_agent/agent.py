@@ -1,3 +1,7 @@
+import agent_catalog
+import agent_catalog.auditor
+import agent_catalog.langchain
+import agent_catalog.provider
 import controlflow
 import controlflow.events
 import controlflow.orchestration
@@ -5,10 +9,6 @@ import controlflow.tools
 import langchain_openai
 import os
 import queue
-import rosetta
-import rosetta.auditor
-import rosetta.langchain
-import rosetta.provider
 
 from utils import TaskFactory
 from utils import build_interaction_tool
@@ -16,7 +16,7 @@ from utils import build_interaction_tool
 # The Rosetta catalog provider serves versioned tools and prompts.
 # For a comprehensive list of what parameters can be set here, see the class documentation.
 # Parameters can also be set with environment variables (e.g., bucket = $ROSETTA_BUCKET).
-provider = rosetta.Provider(
+provider = agent_catalog.Provider(
     # This 'decorator' parameter tells us how tools should be returned (in this case, as a ControlFlow tool).
     decorator=lambda t: controlflow.tools.Tool.from_function(t.func),
     # Below, we define parameters that are passed to tools at runtime.
@@ -34,15 +34,15 @@ provider = rosetta.Provider(
 # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
 # 2. a specific conversation thread / session (passed in via session=thread_id).
 # Note: similar to a Rosetta provider, the parameters of a Rosetta auditor can be set with environment variables.
-auditor = rosetta.auditor.Auditor(llm_name="gpt-4o")
+auditor = agent_catalog.auditor.Auditor(llm_name="gpt-4o")
 chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0)
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
+    # We provide a LangChain specific decorator (agent_catalog.langchain.audit) to inject this auditor into ChatModels.
     starter_agent = controlflow.Agent(
         name="Started Agent",
-        model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
+        model=agent_catalog.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
 
     # Below, we have a helper class that removes some of the boilerplate for using Rosetta + ControlFlow.

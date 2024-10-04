@@ -74,8 +74,8 @@ target/
 .vscode/
 
 # Rosetta's catalog + activity subdirectories.
-.rosetta-catalog/
-.rosetta-activity/
+.agent-catalog/
+.agent-activity/
 
 # .env files.
 */.env

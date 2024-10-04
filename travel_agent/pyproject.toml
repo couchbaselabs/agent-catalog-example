@@ -29,8 +29,8 @@ streamlit = "^1.36.0"
 streamlit-feedback = "^0.1.3"
 
 # The Rosetta project (the front-facing parts)!
-rosetta = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }
-# rosetta = { path = PATH_TO_LOCAL_ROSETTA, extras = ["langchain"], develop = true }
+agent-catalog = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }
+# agent-catalog = { path = PATH_TO_LOCAL_ROSETTA, extras = ["langchain"], develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"

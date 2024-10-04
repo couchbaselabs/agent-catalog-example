@@ -1,17 +1,17 @@
+import agent_catalog.langchain
+import agent_catalog.provider
 import dotenv
 import langchain_core.tools
 import langchain_openai
 import os
 import pathlib
-import rosetta.langchain
-import rosetta.provider
 import uuid
 
 #
 # The tests in this file assumes you have the following:
 # 1. You are running in the examples/travel_agent directory.
 # 2. You have placed your OPEN_API_KEY in the examples/travel_agent/.env file.
-# 3. You have run through the entire README in examples/travel_agent (i.e., you have run rosetta index).
+# 3. You have run through the entire README in examples/travel_agent (i.e., you have run agent_catalog index).
 # 4. You have an active Couchbase instance running.
 #
 dotenv.load_dotenv(pathlib.Path(__file__).parent.parent.parent / "examples" / "travel_agent" / ".env")
@@ -22,10 +22,10 @@ def test_flight_planning():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
+        name="Couchbase Travel Agent", model=agent_catalog.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
 
-    provider = rosetta.provider.Provider(
+    provider = agent_catalog.provider.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
         secrets={
             "CB_CONN_STRING": os.getenv("CB_CONN_STRING"),
@@ -46,10 +46,10 @@ def test_airport_checking():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
+        name="Couchbase Travel Agent", model=agent_catalog.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
 
-    provider = rosetta.Provider(
+    provider = agent_catalog.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
     )
     my_task = controlflow.Task(
@@ -65,9 +65,9 @@ def test_dest_recommendations():
 
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o")
     controlflow.default_agent = controlflow.Agent(
-        name="Couchbase Travel Agent", model=rosetta.langchain.audit(chat_model, session=uuid.uuid4().hex)
+        name="Couchbase Travel Agent", model=agent_catalog.langchain.audit(chat_model, session=uuid.uuid4().hex)
     )
-    provider = rosetta.Provider(
+    provider = agent_catalog.Provider(
         decorator=langchain_core.tools.StructuredTool.from_function,
     )
     my_task = controlflow.Task(

@@ -1,13 +1,13 @@
+import agent_catalog
 import controlflow
 import controlflow.tasks.task
-import rosetta
 import typing
 
 
 class Task(controlflow.Task):
     _accept_status: typing.Callable = None
 
-    def __init__(self, node_name: str, auditor: rosetta.Auditor, session: str, **kwargs):
+    def __init__(self, node_name: str, auditor: agent_catalog.Auditor, session: str, **kwargs):
         super(Task, self).__init__(**kwargs)
         self._accept_status = lambda status, direction: auditor.move(
             node_name=node_name, direction=direction, session=session, content={"status": status.value}
@@ -27,21 +27,21 @@ class Task(controlflow.Task):
 class TaskFactory:
     def __init__(
         self,
-        provider: rosetta.Provider,
-        auditor: rosetta.Auditor,
+        provider: agent_catalog.Provider,
+        auditor: agent_catalog.Auditor,
         session: str,
         tools: list[typing.Any] = None,
         agent: controlflow.Agent = None,
     ):
-        self.provider: rosetta.Provider = provider
-        self.auditor: rosetta.Auditor = auditor
+        self.provider: agent_catalog.Provider = provider
+        self.auditor: agent_catalog.Auditor = auditor
         self.session: str = session
         self.tools: list[typing.Any] = tools if tools is not None else list()
         self.agent: controlflow.Agent = agent
 
     def build(self, prompt_name: str, **kwargs) -> controlflow.Task:
         # Rosetta manages prompts and the tools assigned to these prompts.
-        prompt: rosetta.provider.Prompt = self.provider.get_prompt_for(name=prompt_name)
+        prompt: agent_catalog.provider.Prompt = self.provider.get_prompt_for(name=prompt_name)
         if prompt is None:
             raise RuntimeError(f"Prompt not found with the name {prompt_name}!")
         tools = prompt.tools + self.tools if prompt.tools is not None else self.tools
