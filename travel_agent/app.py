@@ -62,6 +62,14 @@ for i, message in enumerate(streamlit.session_state.messages):
             feedback_type="faces", on_submit=feedback_callback_factory(message["content"]), key=str(i)
         )
 
+with streamlit.sidebar:
+    streamlit.image("https://www.couchbase.com/wp-content/themes/couchbase-com/images/Logo-2000.svg")
+    streamlit.divider()
+    streamlit.markdown(
+        "This travel agent is powered by Couchbase Agent Catalog. See "
+        "[here](https://github.com/couchbaselabs/rosetta-example) for more details!"
+    )
+
 # Read in some user input...
 if user_input := streamlit.chat_input():
     streamlit.session_state.messages.append({"role": "user", "content": user_input})

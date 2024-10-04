@@ -73,9 +73,10 @@ target/
 .idea/
 .vscode/
 
-# Rosetta's catalog + activity subdirectories.
+# agentc's catalog + activity subdirectories.
 .agent-catalog/
 .agent-activity/
+.model-cache/
 
 # .env files.
 */.env
