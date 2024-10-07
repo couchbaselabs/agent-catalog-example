@@ -1,4 +1,4 @@
-# rosetta-example
+# agent-catalog-example
 
 Sample agentic workflows built using Rosetta.
 

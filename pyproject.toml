@@ -1,5 +1,5 @@
 [project]
-name = "rosetta-example"
+name = "agent-catalog-example"
 version = "0.1.0"
 description = "Sample agentic workflows built with help from Rosetta."
 repository = "https://github.com/couchbaselabs/rosetta-example"

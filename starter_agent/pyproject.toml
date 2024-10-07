@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "starter-agent"
+version = "0.1.0"
+description = "A barebones agent built with Rosetta."
+repository = "https://github.com/couchbaselabs/rosetta-example"
+authors = [
+    "Glenn Galvizo <glenn.galvizo@couchbase.com>"
+]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+# For hosting servers (in general).
+fastapi = "^0.111.1"
+requests = "^2.32.3"
+
+# The agent framework of choice.
+controlflow = { git = "git@github.com:PrefectHQ/ControlFlow.git" }
+
+# The Rosetta project (the front-facing parts)!
+agent-catalog = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }
+# agent-catalog = { path = PATH_TO_LOCAL_ROSETTA, extras = ["langchain"], develop = true }
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.0"
+pytest = "^7.4.4"
+
+[tool.ruff]
+line-length = 120
+lint.select = ["F", "B", "I", "SIM"]
+show-fixes = true
+
+[tool.ruff.lint.isort]
+no-sections = true
+force-single-line = true
+lines-between-types = 1
+force-wrap-aliases = true
+split-on-trailing-comma = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
