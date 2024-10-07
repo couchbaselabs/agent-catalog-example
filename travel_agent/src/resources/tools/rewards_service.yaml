@@ -1,7 +1,7 @@
 record_kind: http_request
 
 open_api:
-  filename: services/rewards_spec.json
+  filename: src/endpoints/rewards_spec.json
   operations:
     - path: /create
       method: post
