@@ -1,6 +1,6 @@
-import rosetta, os
+import agentc, os
 
-@rosetta.tool
+@agentc.tool
 def iq_tool(bucket, collection, scope, username, password, cluster_url, jwt_token, capella_address, org_id, natural_query):
     """generate SQL++ query for given natural language query"""
     import requests, json, traceback, logging

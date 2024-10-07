@@ -6,14 +6,14 @@ import langchain_openai
 import os
 import pydantic
 import queue
-import rosetta
-import rosetta.langchain
+import agentc
+import agentc.langchain
 import typing
 
-from base_agent import BaseAgentUsingRosetta
+from base_agent import BaseAgentUsingagentc
 # Load our OPENAI_API_KEY.
 
-class SimpleIQAgent(BaseAgentUsingRosetta):
+class SimpleIQAgent(BaseAgentUsingagentc):
     def __init__(self):
         super().__init__(model_name = "gpt-4o")
 
@@ -21,7 +21,7 @@ class SimpleIQAgent(BaseAgentUsingRosetta):
     def execute_flow(self, thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue, *args, **kwargs):
         travel_agent = controlflow.Agent(
             name="Couchbase Travel Agent",
-            model=rosetta.langchain.audit(self.chat_model, session=thread_id, auditor=self.auditor),
+            model=agentc.langchain.audit(self.chat_model, session=thread_id, auditor=self.auditor),
         )
         with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
             # Below, we have a helper function which will fetch the versioned prompts + tools from the catalog.
@@ -53,7 +53,7 @@ class SimpleIQAgent(BaseAgentUsingRosetta):
 
 
     def _build_NL2SQL_task(self, control_flow_agent, user_natural_language_query: str) -> controlflow.Task:
-        return self.create_task_using_rosetta(
+        return self.create_task_using_agentc(
             control_flow_agent,
             prompt_name="generate_sql_query_and_execute",
             context={

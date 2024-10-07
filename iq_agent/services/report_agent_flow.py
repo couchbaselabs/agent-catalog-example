@@ -6,8 +6,8 @@ import langchain_openai
 import os
 import pydantic
 import queue
-import rosetta
-import rosetta.langchain
+import agentc
+import agentc.langchain
 import typing
 
 # Load our OPENAI_API_KEY.
@@ -15,10 +15,10 @@ dotenv.load_dotenv()
 
 
 def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.Queue):
-    # The Rosetta catalog provider serves versioned tools and prompts.
+    # The agentc catalog provider serves versioned tools and prompts.
     # For a comprehensive list of what parameters can be set here, see the class documentation.
-    # Parameters can also be set with environment variables (e.g., bucket = $ROSETTA_BUCKET).
-    provider = rosetta.Provider(
+    # Parameters can also be set with environment variables (e.g., bucket = $agentc_BUCKET).
+    provider = agentc.Provider(
         # This 'decorator' parameter tells us how tools should be returned (in this case, as a LangChain tool).
         decorator=langchain_core.tools.StructuredTool.from_function,
         # Below, we define parameters that are passed to tools at runtime.
@@ -50,22 +50,22 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
             return response
         return "Message sent to user."
 
-    # The Rosetta LLM auditor will bind all LLM messages to...
-    # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
+    # The agentc LLM auditor will bind all LLM messages to...
+    # 1. a specific agentc catalog snapshot (i.e., the version of the catalog when the agent was started), and
     # 2. a specific conversation thread / session (passed in via session=thread_id).
-    # We provide a LangChain specific decorator (rosetta.langchain.audit) to inject this auditor into ChatModels.
-    # Note: similar to a Rosetta provider, the parameters of a Rosetta auditor can be set with environment variables.
-    auditor = rosetta.auditor.Auditor(llm_name="gpt-4o")
+    # We provide a LangChain specific decorator (agentc.langchain.audit) to inject this auditor into ChatModels.
+    # Note: similar to a agentc provider, the parameters of a agentc auditor can be set with environment variables.
+    auditor = agentc.auditor.Auditor(llm_name="gpt-4o")
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0.0)
     travel_agent = controlflow.Agent(
         name="Couchbase Travel Agent",
-        model=rosetta.langchain.audit(chat_model, session=thread_id, auditor=auditor),
+        model=agentc.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
     with controlflow.Flow(agents=[travel_agent], thread_id=thread_id) as travel_flow:
         # Below, we have a helper function which will fetch the versioned prompts + tools from the catalog.
         def Task(prompt_name: str, **kwargs) -> controlflow.Task:
             with travel_flow:
-                prompt: rosetta.provider.Prompt = provider.get_prompt_for(name=prompt_name)
+                prompt: agentc.provider.Prompt = provider.get_prompt_for(name=prompt_name)
                 if prompt is None:
                     raise RuntimeError(f"Prompt not found with the name {prompt_name}!")
                 tools = prompt.tools + [talk_to_user] if prompt.tools is not None else [talk_to_user]

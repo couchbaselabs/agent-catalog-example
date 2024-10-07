@@ -1,7 +1,7 @@
-import rosetta, os
+import agentc, os
 from sentence_transformers import SentenceTransformer, util
 
-@rosetta.tool
+@agentc.tool
 def vector_search_tool(bucket, collection, scope, username, password, cluster_url, natural_language_query, model, vector_field, answer_field = None):
     """run vector search given a natural language query"""
     import requests, json, traceback, logging
@@ -86,12 +86,12 @@ def vector_search_tool(bucket, collection, scope, username, password, cluster_ur
 
 
 if __name__ == "__main__":
-    bucket_name = "rosetta-search-test"
+    bucket_name = "agentc-search-test"
     scope = "tools-catalog"
     model = SentenceTransformer("flax-sentence-embeddings/st-codesearch-distilroberta-base")
     natural_language_query = "train a model"
     vector_field = "embedding"
 
-    data = vector_search_tool("rosetta-search-test", "glaive_v2_dataset_df_v1_small_train-langchaindescription-M1", "tools-catalog", "Administrator", "password", "couchbase://127.0.0.1",
+    data = vector_search_tool("agentc-search-test", "glaive_v2_dataset_df_v1_small_train-langchaindescription-M1", "tools-catalog", "Administrator", "password", "couchbase://127.0.0.1",
         natural_language_query, model, vector_field)
     print(data)
