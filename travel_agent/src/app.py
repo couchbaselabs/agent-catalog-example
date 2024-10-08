@@ -90,7 +90,7 @@ def gather_messages():
 # Establish our websocket connection.
 if "is_connected" not in streamlit.session_state:
     streamlit.chat_input("Chat with the agent!", disabled=True)
-    with streamlit.status("Connecting to agent..."):
+    with streamlit.chat_message("assistant"), streamlit.status("Connecting to agent..."):
         streamlit.session_state.event_loop, worker_thread = create_loop()
         streamlit.session_state.websocket = create_websocket()
         streamlit.write("Websocket connection established.")

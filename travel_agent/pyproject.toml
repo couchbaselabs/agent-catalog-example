@@ -36,6 +36,13 @@ agentc = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchai
 pre-commit = "^3.0.0"
 pytest = "^7.4.4"
 
+[tool.poetry.group.analytics]
+optional = true
+
+[tool.poetry.group.analytics.dependencies]
+jupyterlab = "^4.2.5"
+ragas = "^0.1.19"
+
 [tool.poetry.group.controlflow]
 optional = true
 
