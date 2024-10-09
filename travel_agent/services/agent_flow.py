@@ -1,5 +1,5 @@
-import agentc
-import agentc.langchain
+import agent_catalog
+import agent_catalog.langchain
 import controlflow
 import controlflow.events
 import controlflow.orchestration
@@ -24,7 +24,7 @@ dotenv.load_dotenv()
 # The Rosetta catalog provider serves versioned tools and prompts.
 # For a comprehensive list of what parameters can be set here, see the class documentation.
 # Parameters can also be set with environment variables (e.g., bucket = $ROSETTA_BUCKET).
-provider = agentc.Provider(
+provider = agent_catalog.Provider(
     # This 'decorator' parameter tells us how tools should be returned (in this case, as a ControlFlow tool).
     decorator=lambda t: controlflow.tools.Tool.from_function(t.func),
     # Below, we define parameters that are passed to tools at runtime.
@@ -42,7 +42,7 @@ provider = agentc.Provider(
 # 1. a specific Rosetta catalog snapshot (i.e., the version of the catalog when the agent was started), and
 # 2. a specific conversation thread / session (passed in via session=thread_id).
 # Note: similar to a Rosetta provider, the parameters of a Rosetta auditor can be set with environment variables.
-auditor = agentc.Auditor(llm_name="gpt-4o")
+auditor = agent_catalog.Auditor(llm_name="gpt-4o")
 chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0)
 
 
@@ -50,7 +50,7 @@ def run_flow(thread_id: str, to_user_queue: queue.Queue, from_user_queue: queue.
     # We provide a LangChain specific decorator (agent_catalog.langchain.audit) to inject this auditor into ChatModels.
     travel_agent = controlflow.Agent(
         name="Couchbase Travel Agent",
-        model=agentc.langchain.audit(chat_model, session=thread_id, auditor=auditor),
+        model=agent_catalog.langchain.audit(chat_model, session=thread_id, auditor=auditor),
     )
     flow = controlflow.Flow(default_agent=travel_agent, thread_id=thread_id)
 

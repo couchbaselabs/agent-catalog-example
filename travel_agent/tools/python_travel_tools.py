@@ -1,11 +1,11 @@
-import agentc
+import agent_catalog
 import pydantic
 import re
 
 
-# Tools in Rosetta are decorated with `@agentc.tool`.
+# Tools in Rosetta are decorated with `@agent_catalog.tool`.
 # Python tools, at a minimum, must contain a docstring (the string immediately below the function name line).
-@agentc.tool
+@agent_catalog.tool
 def check_if_airport_exists(aita_code: str) -> bool:
     """Check if the given AITA code is valid (i.e., represents an airline)."""
     return (
@@ -173,109 +173,109 @@ class LocalEvent(pydantic.BaseModel):
     description: str
 
 
-@agentc.tool
+@agent_catalog.tool
 def search_best_flight_deals() -> list[FlightDeal]:
     """Search for the best flight deals."""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def create_packing_checklist() -> list[PackingChecklistItem]:
     """Create a packing checklist."""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def organize_travel_documents() -> None:
     """Organize all of your travel documents."""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def setup_out_of_office_reply() -> None:
     """Set up an out-of-office email reply."""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def find_hotel_by_location(location: str) -> list[Hotel]:
     """Find hotels in a specific location"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def get_weather_forecast(destination: str) -> WeatherForecast:
     """Get the weather forecast for a travel destination"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def calculate_travel_costs(distance: float, fuel_efficiency: float, fuel_price: float) -> TravelCost:
     """Calculate the travel costs based on distance, fuel efficiency, and fuel price"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def search_local_restaurants(city: str) -> list[LocalRestaurant]:
     """Search for local restaurants in a given city"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def find_tourist_attractions(destination: str) -> list[TouristAttraction]:
     """Find popular tourist attractions in a travel destination"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def book_flight(ticket_info: dict) -> None:
     """Book a flight using the provided ticket information"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def get_currency_exchange_rate(currency_from: str, currency_to: str) -> CurrencyExchangeRate:
     """Get the currency exchange rate between two currencies"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def create_travel_itinerary(destinations: list, duration: int) -> TravelItinerary:
     """Create a travel itinerary based on a list of destinations and duration"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def find_travel_insurance_options(traveler_info: dict) -> list[TravelInsuranceOption]:
     """Find travel insurance options based on traveler information"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def get_public_transportation_routes(city: str) -> list[PublicTransportationRoute]:
     """Get public transportation routes in a specific city"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def check_travel_restrictions(country: str) -> list[TravelRestriction]:
     """Check travel restrictions for a specific country"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def find_car_rental_services(location: str) -> list[CarRentalService]:
     """Find car rental services in a specific location"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def get_travel_advice(destination: str) -> list[TravelAdvice]:
     """Get travel advice for a specific destination"""
     return None
 
 
-@agentc.tool
+@agent_catalog.tool
 def find_local_events(city: str, date: str) -> list[LocalEvent]:
     """Find local events happening in a city on a specific date"""
     return None
