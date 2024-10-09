@@ -3,7 +3,7 @@ import pydantic
 import re
 
 
-# Tools in Rosetta are decorated with `@agent_catalog.tool`.
+# Tools in Agent Catalog are decorated with `@agentc.tool`.
 # Python tools, at a minimum, must contain a docstring (the string immediately below the function name line).
 @agent_catalog.tool
 def check_if_airport_exists(aita_code: str) -> bool:

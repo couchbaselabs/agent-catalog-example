@@ -17,7 +17,7 @@ if [ "$1" == "controlflow" ]; then
   echo "Spawning new Prefect server."
   prefect server start &
   echo "Starting agent server."
-  fastapi run services/agent_server.py --port 10000 &
+  fastapi run src/endpoints/agent_server.py --port 10000 &
 
 else
   echo "Invalid argument. Usage: $0 [controlflow]"
@@ -25,7 +25,7 @@ else
 fi
 
 echo "Starting (dummy) rewards server."
-fastapi run services/rewards_server.py --port 10001 &
+fastapi run src/endpoints/rewards_server.py --port 10001 &
 
 echo "Starting UI."
-streamlit run app.py
+streamlit run src/app.py
