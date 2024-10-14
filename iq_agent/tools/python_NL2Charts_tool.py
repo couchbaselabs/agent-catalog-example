@@ -1,12 +1,12 @@
+import agentc
 import os
-import rosetta
 
 
-@rosetta.tool
+@agentc.tool
 def iq_charts_tool(
     bucket, scope, collection, username, password, cluster_url, capella_address, org_id, jwt_token, natural_query
 ):
-    """generate insights and plotly charts for given natural language query"""
+    """Generate insights and plotly charts for given natural language query"""
     import json
     import requests
     import traceback
