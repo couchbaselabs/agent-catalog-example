@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "travel-example"
 version = "0.1.0"
-description = "A travel agent example built with Rosetta."
+description = "A travel agent example built with Couchbase Agent Catalog."
 repository = "https://github.com/couchbaselabs/rosetta-example"
 authors = [
     "Glenn Galvizo <glenn.galvizo@couchbase.com>"
@@ -29,8 +29,7 @@ streamlit = "^1.36.0"
 streamlit-feedback = "^0.1.3"
 
 # The agentc project (the front-facing parts)!
-agentc = { git = "git@github.com:couchbaselabs/rosetta.git", extras = ["langchain"] }
-# agentc= { path = PATH_TO_LOCAL_AGENT_CATALOG, extras = ["langchain"], develop = true }
+agentc = { path = "/Users/glenn.galvizo/Projects/AgentCatalog/libs/agentc", extras = ["langchain"], develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"

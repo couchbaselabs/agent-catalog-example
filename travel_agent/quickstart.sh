@@ -15,6 +15,7 @@ function on_ctrl_c() {
 
 if [ "$1" == "controlflow" ]; then
   echo "Spawning new Prefect server."
+  export PREFECT_API_URL="http://127.0.0.1:4200/api"
   prefect server start &
   echo "Starting agent server."
   fastapi run src/endpoints/agent_server.py --port 10000 &

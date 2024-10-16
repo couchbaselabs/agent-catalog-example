@@ -75,16 +75,20 @@ def feedback_callback_factory(assistant_message: str):
 
 # We need to gather messages until the agent is done thinking.
 def gather_messages():
-    while True:
-        _message = asyncio.run_coroutine_threadsafe(
-            streamlit.session_state.websocket.recv(), streamlit.session_state.event_loop
-        ).result()
-        _message = json.loads(_message)
-        if not any(_message["content"] == m for m in streamlit.session_state.messages):
-            streamlit.session_state.messages.append(_message)
-            streamlit.caption(_message["content"])
-        if _message["role"] == "assistant":
-            break
+    try:
+        while True:
+            _message = asyncio.run_coroutine_threadsafe(
+                streamlit.session_state.websocket.recv(), streamlit.session_state.event_loop
+            ).result()
+            _message = json.loads(_message)
+            if not any(_message["content"] == m for m in streamlit.session_state.messages):
+                streamlit.session_state.messages.append(_message)
+                streamlit.caption(_message["content"])
+            if _message["role"] == "assistant":
+                break
+    except websockets.exceptions.ConnectionClosedError:
+        streamlit.write("Agent has disconnected from the current session.")
+        streamlit.session_state.is_finished = True
 
 
 # Establish our websocket connection.
@@ -120,7 +124,6 @@ elif "is_ready" not in streamlit.session_state:
 
 else:
     # Now we can chat! Load our old messages.
-    websocket = streamlit.session_state.websocket
     message_iterator = iter(enumerate(streamlit.session_state.messages))
     try:
         i, message = next(message_iterator)
@@ -147,14 +150,18 @@ else:
         pass
 
     # And update our messages when a user inputs something.
-    if user_input := streamlit.chat_input("Chat with the agent!"):
-        user_message = {"role": "human", "content": user_input}
-        streamlit.session_state.messages.append(user_message)
-        with streamlit.chat_message(user_message["role"]):
-            streamlit.markdown(user_message["content"])
-        asyncio.run_coroutine_threadsafe(
-            websocket.send(json.dumps(user_message)), streamlit.session_state.event_loop
-        ).result()
-        with streamlit.chat_message("assistant"), streamlit.status("(click here to see my thoughts)"):
-            gather_messages()
-        streamlit.rerun()
+    if "is_finished" in streamlit.session_state:
+        streamlit.chat_input("Chat with the agent!", disabled=True)
+    else:
+        websocket = streamlit.session_state.websocket
+        if user_input := streamlit.chat_input("Chat with the agent!"):
+            user_message = {"role": "human", "content": user_input}
+            streamlit.session_state.messages.append(user_message)
+            with streamlit.chat_message(user_message["role"]):
+                streamlit.markdown(user_message["content"])
+            asyncio.run_coroutine_threadsafe(
+                websocket.send(json.dumps(user_message)), streamlit.session_state.event_loop
+            ).result()
+            with streamlit.chat_message("assistant"), streamlit.status("(click here to see my thoughts)"):
+                gather_messages()
+            streamlit.rerun()

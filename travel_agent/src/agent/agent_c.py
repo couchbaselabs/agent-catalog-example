@@ -18,7 +18,7 @@ dotenv.load_dotenv()
 
 # The Agent Catalog provider serves versioned tools and prompts.
 # For a comprehensive list of what parameters can be set here, see the class documentation.
-# Parameters can also be set with environment variables (e.g., bucket = $AGENTC_BUCKET).
+# Parameters can also be set with environment variables (e.g., bucket = $AGENT_CATALOG_BUCKET).
 provider = agentc.Provider(
     # This 'decorator' parameter tells us how tools should be returned (in this case, as a ControlFlow tool).
     decorator=lambda t: controlflow.tools.Tool.from_function(t.func),
@@ -178,7 +178,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
                 break
 
             # See if the user wants to continue.
-            is_continue_prompt = provider.get_prompt_for(query="asking to continue")
+            is_continue_prompt = provider.get_prompt_for(query="after addressing a user's request.")
             is_continue = await Task(
                 node_name="ask_to_continue",
                 auditor=auditor,
@@ -226,13 +226,12 @@ async def _build_recommender_task(
 
     # Task 2A: Get the user's location.
     user_location_prompt = provider.get_prompt_for(query="getting user location")
-    user_location_tools = [talk_to_user] + (user_location_prompt.tools if user_location_prompt.tools else [])
     user_location = await Task(
         node_name="get_user_location",
         auditor=auditor,
         session=thread_id,
         objective=user_location_prompt.prompt,
-        tools=user_location_tools,
+        tools=user_location_prompt.tools,
         agents=[travel_agent],
         result_type=str,
     ).run_async(handlers=[callback_handler])

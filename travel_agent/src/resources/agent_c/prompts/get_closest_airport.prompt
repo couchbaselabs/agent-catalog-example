@@ -6,7 +6,8 @@ name: get_closest_airport
 description: Instructions on how to locate an airport from a given location.
 
 tools:
-  - name: check_if_airport_exists
+  - query: "checking AITA codes and whether they are valid"
+    limit: 1
 
 annotations:
   framework: "controlflow"
