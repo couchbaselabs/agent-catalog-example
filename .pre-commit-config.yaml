@@ -31,17 +31,20 @@ repos:
         entry: OPENAI_API_KEY\s*=\s*[a-zA-Z0-9_-]
         language: pygrep
         types: [text]
-      - id: do-not-commit-local-dev
-        name: check for local dev environment
-        entry: ^rosetta\s*=\s*\{\s*path\s*=
-        language: pygrep
-        types: [toml]
 
-  # For making sure the poetry.lock file is up-to-date.
-  - repo: https://github.com/python-poetry/poetry
-    rev: '1.8.0'
-    hooks:
-    - id: poetry-check
-      args: ["-C", "travel_agent"]
-    - id: poetry-lock
-      args: ["-C", "travel_agent"]
+  # TODO (GLENN): When we get the PyPI package up, we can add this back in.
+#      - id: do-not-commit-local-dev
+#        name: check for local dev environment
+#        entry: ^agentc\s*=\s*\{\s*path\s*=
+#        language: pygrep
+#        types: [toml]
+
+  # TODO (GLENN): When we get the PyPI package up, we can add this back in.
+#  # For making sure the poetry.lock file is up-to-date.
+#  - repo: https://github.com/python-poetry/poetry
+#    rev: '1.8.0'
+#    hooks:
+#    - id: poetry-check
+#      args: ["-C", "travel_agent"]
+#    - id: poetry-lock
+#      args: ["-C", "travel_agent"]
