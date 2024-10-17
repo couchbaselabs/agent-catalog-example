@@ -28,8 +28,9 @@ requests = "^2.32.3"
 streamlit = "^1.36.0"
 streamlit-feedback = "^0.1.3"
 
+# TODO (GLENN): This must be replaced with the PyPI package once it's available.
 # The agentc project (the front-facing parts)!
-agentc = { path = "/Users/glenn.galvizo/Projects/AgentCatalog/libs/agentc", extras = ["langchain"], develop = true }
+agentc = { path = "../../AgentCatalog/libs/agentc", extras = ["langchain"], develop = true }
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"
