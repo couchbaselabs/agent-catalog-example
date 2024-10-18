@@ -12,9 +12,11 @@ Agent Catalog (`agentc`).
    ```
 2. Clone this repository -- make sure that you have an SSH key setup!
    ```bash
-   git clone git@github.com:couchbaselabs/rosetta-example.git
+   git clone git@github.com:couchbaselabs/agent-catalog-example.git
    ```
 3. Navigate to this directory, and install the dependencies from `pyproject.toml`.
+   **For now, you'll also have to clone the `couchbaselabs/agent-catalog.git` folder and modify line 34 to point to
+   this directory. This process will be made more seamless in the future.**
    Use `--with controlflow` to use the ControlFlow backend (more examples with other agent frameworks are coming soon!).
    ```bash
    cd travel_agent
