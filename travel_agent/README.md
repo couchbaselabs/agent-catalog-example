@@ -40,6 +40,8 @@ Now, we need some data in Couchbase!
 In the future, we will have a Docker image to simplify this setup.
 
 1. Create a Couchbase instance (either locally or on Capella).
+   You'll need a cluster with KV, N1QL, FTS, and Analytics (CBAS).
+   We'll be using FTS for its vector index support and analytics to transform our agent activity.
 2. Load the `travel-sample` example in your Couchbase instance (under Settings -> Sample Buckets).
 3. Register your Couchbase connection string, username, and password in the `.env` file.
 4. Run the `ingest_blogs.py` setup script to generate embeddings and insert articles into a new
