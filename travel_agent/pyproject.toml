@@ -2,7 +2,7 @@
 name = "travel-example"
 version = "0.1.0"
 description = "A travel agent example built with Couchbase Agent Catalog."
-repository = "https://github.com/couchbaselabs/rosetta-example"
+repository = "https://github.com/couchbaselabs/agent-catalog-example"
 authors = [
     "Glenn Galvizo <glenn.galvizo@couchbase.com>"
 ]

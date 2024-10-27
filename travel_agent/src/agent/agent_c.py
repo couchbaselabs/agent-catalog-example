@@ -62,7 +62,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
     # 1. a specific catalog snapshot (i.e., the version of the catalog when the agent was started), and
     # 2. a specific conversation thread / session (passed in via session=thread_id).
     # Note: similar to a Agent Catalog provider, the parameters of an auditor can be set with environment variables.
-    auditor = agentc.Auditor(llm_name="gpt-4o", agent_name="Couchbase Travel Agent")
+    auditor = agentc.Auditor(agent_name="Couchbase Travel Agent")
 
     # To show "thinking" in our app, we'll add an event handler here.
     def event_handler(event: controlflow.events.Event):

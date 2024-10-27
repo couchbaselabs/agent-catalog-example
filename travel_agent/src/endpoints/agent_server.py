@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 @agent_server.post("/feedback/{thread_id}")
 def feedback(thread_id: str, content: str):
-    auditor = agentc.Auditor(llm_name="gpt-4o")
+    auditor = agentc.Auditor(agent_name="Couchbase Travel Agent")
     auditor.accept(
         kind=agentc.auditor.Kind.Feedback,
         content=content,
