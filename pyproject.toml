@@ -1,10 +1,10 @@
 [project]
 name = "agent-catalog-example"
 version = "0.1.0"
-description = "Sample agentic workflows built with help from Rosetta."
+description = "Sample agentic workflows built with help from Couchbase Agent Catalog."
 repository = "https://github.com/couchbaselabs/rosetta-example"
 authors = [
-    {name = "Glenn Galvizo", email = "glenn.galvizo@couchbase.com"}
+    { name = "Glenn Galvizo", email = "glenn.galvizo@couchbase.com" },
 ]
 readme = "README.md"
 

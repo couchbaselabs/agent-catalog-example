@@ -1,10 +1,11 @@
 # agent-catalog-example
 
-Sample agentic workflows built using Rosetta.
+Sample agentic workflows built using Couchbase Agent Catalog.
 
 ## For Users
 
 Navigate to the specific example (e.g., `travel_agent`) you are interested in! :-)
+In the future, we will have more examples for you to explore.
 
 ## For Developers
 
@@ -18,36 +19,28 @@ pip install pre-commit
 pre-commit install
 ```
 
-### Using Local `rosetta`, `rosetta-core`, and `rosetta-lc`
+### Using Local `agentc`
 
-By default, `rosetta-example` will clone the `rosetta` repository and use the files specified in `master`.
-For developers working on `rosetta-core` / `rosetta` / `rosetta-lc` that want to see their changes reflected in
-`rosetta-example` without going through `git`, perform the following:
+By default, all examples in `agentc-example` will clone the `agent-catalog` repository and use the files specified in
+`master` (specifically, `libs/agentc`).
+For developers working on any of the `agentc` packages that want to see their changes reflected in `agentc-example`
+without going through `git`, perform the following:
 
-1. Modify the `rosetta` line in `pyproject.toml` to point to your `rosetta` directory.
+1. In the specific example you want to run (e.g., `travel_agent`), modify the `[tool.poetry.dependencies.agentc]`
+   section in `pyproject.toml` to point to your `agent-catalog` directory.
+   Specifically, you'll need to comment out the "git" and "subdirectories" line and comment out the "path" line.
+   Substitute `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` accordingly.
    ```toml
-   # The core of Rosetta.
-   # rosetta = { git = "git@github.com:couchbaselabs/rosetta-core.git" }
-   rosetta = { path = PATH_TO_LOCAL_ROSETTA, develop = true }
+   # The agentc project (the front-facing parts)!
+   [tool.poetry.dependencies.agentc]
+   # git = "git@github.com:couchbaselabs/agent-catalog.git"
+   # subdirectory = "libs/agentc"
+   path = "$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO/libs/agentc"
+   extras = ["langchain"]
+   develop = true
    ```
-   If you want a local version of `rosetta-core`, add the line below:
-   ```toml
-   rosetta-core = { path = PATH_TO_LOCAL_ROSETTA_CORE, develop = true }
-   ```
-   If you want a local version of `rosetta-lc`, add the line below:
-   ```toml
-   rosetta-lc = { path = PATH_TO_LOCAL_ROSETTA_LC, develop = true }
-   ```
-2. Remove the old `rosetta` (and/or `rosetta-core` and/or `rosetta-lc`) from your Python environment.
-   ```bash
-   pip uninstall rosetta rosetta-core rosetta-lc
-   ```
-3. From `rosetta-example` (not `rosetta`), update your Poetry environment.
+2. Now update your Poetry environment.
    ```bash
    poetry update
    ```
-4. Your Poetry environment for `rosetta-example` should now possess the `rosetta` files that are in your local
-   `rosetta` (and/or `rosetta-core` and/or `rosetta-lc`) directory.
-   The `develop = true` attribute should signal to poetry that `rosetta` / `rosetta-core` / `rosetta-lc` is an
-   "editable" package now, and allow for `rosetta-example` to directly call `rosetta` / `rosetta-core` / `rosetta-lc`
-   code (i.e., no duplicated source files).
+   Your Poetry environment should now possess the `agentc-catalog` files in `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO`.
