@@ -29,8 +29,12 @@ streamlit = "^1.36.0"
 streamlit-feedback = "^0.1.3"
 
 # The agentc project (the front-facing parts)!
-agentc = { git = "git@github.com:couchbaselabs/agent-catalog.git", subdirectory = "libs/agentc", extras = ["langchain"], develop = true }
-# agentc = { path = "CHANGE ME TO YOUR LOCAL AGENT CATALOG PATH", extras = ["langchain"], develop = true },
+[tool.poetry.dependencies.agentc]
+git = "git@github.com:couchbaselabs/agent-catalog.git"
+subdirectory = "libs/agentc"
+# path = "$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO/libs/agentc"
+extras = ["langchain"]
+develop = true
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.0.0"

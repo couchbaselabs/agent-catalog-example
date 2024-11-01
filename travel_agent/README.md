@@ -1,4 +1,5 @@
 # Travel Agent Example
+
 This directory contains all code required to run a sample travel agent whose tools and prompts are versioned with
 Agent Catalog (`agentc`).
 
@@ -21,8 +22,8 @@ Agent Catalog (`agentc`).
    poetry install --with controlflow
    ```
 4. You should now have the `agentc` command line tool installed.
-   Test your installation by running the `agentc` command (_the first run of this command downloads embedding models,
-   subsequent runs will be faster_).
+   Test your installation by running the `agentc` command (_the first run of this command will also compile libraries
+   like Numpy, subsequent runs will be faster_).
    ```bash
    poetry shell
    agentc
@@ -36,12 +37,16 @@ Agent Catalog (`agentc`).
 For the remainder of the commands in this README, we assume the current working directory is `travel_agent`.
 
 ### Couchbase Setup
+
 Now, we need some data in Couchbase!
-In the future, we will have a Docker image to simplify this setup.
 
 1. Create a Couchbase instance (either locally or on Capella).
    You'll need a cluster with KV, N1QL, FTS, and Analytics (CBAS).
    We'll be using FTS for its vector index support and analytics to transform our agent activity.
+   _If you have Docker installed, you can run the command below to quickly spin-up a Couchbase instance:
+   ```bash
+      docker run -d travel-example-db -p 8091-8096:8091-8096 -p 11210-11211:11210-11211 couchbase`
+   ```
 2. Load the `travel-sample` example in your Couchbase instance (under Settings -> Sample Buckets).
 3. Register your Couchbase connection string, username, and password in the `.env` file.
 4. Run the `ingest_blogs.py` setup script to generate embeddings and insert articles into a new
@@ -54,9 +59,9 @@ In the future, we will have a Docker image to simplify this setup.
    ```bash
    python3 setup/create_index.py
    ```
-   For Capella instances, see the link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html)
+   For Capella instances, see the
+   link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html)
    for instructions on how to do so using the Capella UI (using the Search -> QUICK INDEX screen).
-
 
 ## Execution
 
@@ -79,8 +84,8 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    We must now "index" our tools for Agent Catalog to serve to ControlFlow for use in its agentic workflows.
    Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
-   agentc index resources/tools --kind tool
-   agentc publish --kind tool --bucket 'travel-sample'
+   agentc index src/resources/agent_c/tools --kind tool
+   agentc publish tool --bucket 'travel-sample'
    ```
    The local catalog, by default, will appear as `.agent_catalog/tool_catalog.json`.
    To publish these tools to a database and leverage the versioning capabilities of Agent Catalog, use the subsequent
@@ -88,8 +93,8 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    this tutorial.)_
 3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located.
    ```bash
-   agentc index resources/prompts --kind prompt
-   agentc publish --kind prompt --bucket 'travel-sample'
+   agentc index src/resources/agent_c/prompts --kind prompt
+   agentc publish prompt --bucket 'travel-sample'
    ```
    Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
    the `index` command). _(Note that this `publish` step isn't necessary to continue with this tutorial.)_
@@ -100,6 +105,7 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    ```bash
    ./quickstart.sh controlflow
    ```
+   _If you see a warning message about
 5. Navigate to http://localhost:8501 and try out the app!
 6. To stop the FastAPI + Prefect (if using ControlFlow) servers spawned as background processes in step 4, use Ctrl-C.
    If you still see left-over processes, run the command below.

@@ -73,12 +73,16 @@ target/
 .idea/
 .vscode/
 
-# agentc's catalog + activity subdirectories.
-.agent-catalog/
+# agentc's ignored activity subdirectories.
 .agent-activity/
 .model-cache/
+
+# Poetry lock files.
+*/poetry.lock
 
 # .env files.
 */.env
 .env
-*/poetry.lock
+
+# Mac DS_Store files.
+*.DS_Store
