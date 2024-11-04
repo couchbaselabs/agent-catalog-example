@@ -11,14 +11,17 @@ Agent Catalog (`agentc`).
    ```bash
    python3 -m pip install poetry
    ```
-2. Clone this repository -- make sure that you have an SSH key setup!
+2. Clone this repository and `agent-catalog` -- make sure that you have an SSH key setup!
    ```bash
+   git clone git@github.com:couchbaselabs/agent-catalog.git
    git clone git@github.com:couchbaselabs/agent-catalog-example.git
    ```
 3. Navigate to this directory, and install the dependencies from `pyproject.toml`.
+   Be sure to modify the `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` line to the location of the `agent-catalog` repository.
    Use `--with controlflow` to use the ControlFlow backend (more examples with other agent frameworks are coming soon!).
    ```bash
-   cd travel_agent
+   cd agent-catalog-example/travel_agent
+   sed -i -e 's|\$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO|'"$PWD/../../agent-catalog"'|g' pyproject.toml
    poetry install --with controlflow
    ```
 4. You should now have the `agentc` command line tool installed.
@@ -84,7 +87,7 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    We must now "index" our tools for Agent Catalog to serve to ControlFlow for use in its agentic workflows.
    Use the `index` command to create a local catalog, and point to where all of our tools are located.
    ```bash
-   agentc index src/resources/agent_c/tools --kind tool
+   agentc index src/resources/agent_c/tools
    agentc publish tool --bucket 'travel-sample'
    ```
    The local catalog, by default, will appear as `.agent_catalog/tool_catalog.json`.
@@ -93,7 +96,7 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    this tutorial.)_
 3. Repeat this indexing step for the `prompts` folder, where all of our prompts are located.
    ```bash
-   agentc index src/resources/agent_c/prompts --kind prompt
+   agentc index src/resources/agent_c/prompts
    agentc publish prompt --bucket 'travel-sample'
    ```
    Similarly, you are free to publish your prompts to a database with the same `publish` command (again, after
@@ -105,7 +108,6 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    ```bash
    ./quickstart.sh controlflow
    ```
-   _If you see a warning message about
 5. Navigate to http://localhost:8501 and try out the app!
 6. To stop the FastAPI + Prefect (if using ControlFlow) servers spawned as background processes in step 4, use Ctrl-C.
    If you still see left-over processes, run the command below.

@@ -1,4 +1,5 @@
 import asyncio
+import controlflow.events.events
 import dotenv
 import fastapi
 import langchain_openai
@@ -11,14 +12,14 @@ dotenv.load_dotenv()
 
 async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
     # To show "thinking" in our app, we'll add an event handler here.
-    def event_handler(event: tools.controlflow.events.Event):
-        if isinstance(event, tools.controlflow.events.events.OrchestratorMessage):
+    def event_handler(event: controlflow.events.Event):
+        if isinstance(event, controlflow.events.events.OrchestratorMessage):
             content = event.content
-        elif isinstance(event, tools.controlflow.events.events.ToolCallEvent):
+        elif isinstance(event, controlflow.events.events.ToolCallEvent):
             content = event.tool_call
-        elif isinstance(event, tools.controlflow.events.events.ToolResultEvent):
+        elif isinstance(event, controlflow.events.events.ToolResultEvent):
             content = {"tool_call": event.tool_call, "tool_result": event.tool_result.str_result}
-        elif isinstance(event, tools.controlflow.events.events.AgentMessage):
+        elif isinstance(event, controlflow.events.events.AgentMessage):
             content = event.message
         else:
             return
@@ -44,17 +45,17 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
 
     # ControlFlow agents (and many other agent frameworks) accept LangChain chat models as LLM interfaces.
     chat_model = langchain_openai.chat_models.ChatOpenAI(model="gpt-4o", temperature=0)
-    travel_agent = tools.controlflow.Agent(
+    travel_agent = controlflow.Agent(
         name="Couchbase Travel Agent",
         model=chat_model,
         tools=[talk_to_user],
     )
 
-    with tools.controlflow.Flow():
-        callback_handler = tools.controlflow.orchestration.handler.CallbackHandler(event_handler)
+    with controlflow.Flow():
+        callback_handler = controlflow.orchestration.handler.CallbackHandler(event_handler)
         while True:
             # Request router: find out what the user wants to do.
-            user_intent = await tools.controlflow.Task(
+            user_intent = await controlflow.Task(
                 objective="""
                 Ask the user what they need help with.
                 NEVER assume the user intent, always ask them first.
@@ -92,7 +93,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
                     Hallucinate as much as you'd like, just make it sound real but keep a professional persona.
                     You MUST talk back to the user (use your talk_to_user tool and communicate your response to them).
                     """
-                    next_task = tools.controlflow.Task(
+                    next_task = controlflow.Task(
                         objective=next_prompt,
                         tools=[talk_to_user],
                         agents=[travel_agent],
@@ -102,7 +103,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
                     next_prompt = """
                     Tell the user that you cannot help them with their request and explain why.
                     """
-                    next_task = tools.controlflow.Task(
+                    next_task = controlflow.Task(
                         objective=next_prompt,
                         tools=[talk_to_user],
                         agents=[travel_agent],
@@ -115,7 +116,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
                 Tell the user that you cannot help them with their request right now.
                 You MUST talk to the user here and communicate your response to them.
                 """
-                await tools.controlflow.Task(
+                await controlflow.Task(
                     objective=failure_prompt,
                     tools=[talk_to_user],
                     agents=[travel_agent],
@@ -129,7 +130,7 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
             If they say no, return false.
             When in doubt, ask the user again for clarification.
             """
-            is_continue = await tools.controlflow.Task(
+            is_continue = await controlflow.Task(
                 objective=is_continue_prompt,
                 tools=[talk_to_user],
                 agents=[travel_agent],
@@ -140,10 +141,10 @@ async def run_flow(thread_id: str, websocket: fastapi.WebSocket):
 
 
 async def _build_recommender_task(
-    travel_agent: tools.controlflow.Agent,
-    callback_handler: tools.controlflow.orchestration.Handler,
+    travel_agent: controlflow.Agent,
+    callback_handler: controlflow.orchestration.Handler,
     talk_to_user: tools.typing.Callable,
-) -> tools.controlflow.Task:
+) -> controlflow.Task:
     # Task 1A: Decide on a destination by working with the user.
     recommend_destinations_prompt = """
     Your objective is to follow the plan below.
@@ -156,7 +157,7 @@ async def _build_recommender_task(
     3. Ask the user to confirm their travel destination from the list of recommended destinations.
        You MUST ask the user to confirm their travel destination.
     """
-    recommended_destinations = await tools.controlflow.Task(
+    recommended_destinations = await controlflow.Task(
         objective=recommend_destinations_prompt,
         tools=[tools.get_travel_blog_snippets_from_user_interests, talk_to_user],
         agents=[travel_agent],
@@ -169,7 +170,7 @@ async def _build_recommender_task(
     You must use a tool to verify that the IATA code is valid.
     DO NOT continue until you can verify that the IATA code is valid.
     """
-    closest_dest_airport = await tools.controlflow.Task(
+    closest_dest_airport = await controlflow.Task(
         objective=closet_dest_airport_prompt,
         tools=[tools.check_if_airport_exists],
         agents=[travel_agent],
@@ -181,7 +182,7 @@ async def _build_recommender_task(
     user_location_prompt = """
     Ask the user for their location.
     """
-    user_location = await tools.controlflow.Task(
+    user_location = await controlflow.Task(
         objective=user_location_prompt,
         tools=[talk_to_user],
         agents=[travel_agent],
@@ -190,7 +191,7 @@ async def _build_recommender_task(
 
     # Task 2B: Find the closest airport to the user's location.
     closet_source_airport_prompt = closet_dest_airport_prompt
-    closest_source_airport = await tools.controlflow.Task(
+    closest_source_airport = await controlflow.Task(
         objective=closet_source_airport_prompt,
         tools=[tools.check_if_airport_exists],
         agents=[travel_agent],
@@ -213,7 +214,7 @@ async def _build_recommender_task(
     If there are no direct routes, then find a one-layover route.
     If there are no such routes, then try another source airport that is close.
     """
-    source_to_dest_route = await tools.controlflow.Task(
+    source_to_dest_route = await controlflow.Task(
         objective=find_source_to_dest_route_prompt,
         tools=[tools.find_direct_routes_between_airports, tools.find_routes_with_one_layover],
         agents=[travel_agent],
@@ -240,7 +241,7 @@ async def _build_recommender_task(
     1. Hawaii to Hilo
     2. Hilo to SFO
     """
-    formatted_travel_plan = await tools.controlflow.Task(
+    formatted_travel_plan = await controlflow.Task(
         objective=format_travel_plan_prompt,
         tools=[],
         agents=[travel_agent],
@@ -258,7 +259,7 @@ async def _build_recommender_task(
     In the same message, ask if the travel plan looks okay to continue with.
     DO NOT return a message without the travel plan.
     """
-    return tools.controlflow.Task(
+    return controlflow.Task(
         objective=return_travel_plan_prompt,
         tools=[talk_to_user],
         agents=[travel_agent],
