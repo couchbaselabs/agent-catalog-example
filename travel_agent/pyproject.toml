@@ -31,7 +31,7 @@ streamlit-feedback = "^0.1.3"
 
 # The agentc project (the front-facing parts)!
 [tool.poetry.dependencies.agentc]
-path = "../../agent-catalog/libs/agentc"
+path = "$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO/libs/agentc"
 extras = ["langchain"]
 develop = true
 
