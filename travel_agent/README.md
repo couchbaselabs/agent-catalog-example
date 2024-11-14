@@ -16,14 +16,15 @@ Agent Catalog (`agentc`).
    git clone git@github.com:couchbaselabs/agent-catalog.git
    git clone git@github.com:couchbaselabs/agent-catalog-example.git
    ```
-3. Navigate to this directory, and install the dependencies from `pyproject.toml`.
-   Be sure to modify the `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` line to the location of the `agent-catalog` repository.
+3. Navigate to this directory (`agent-catalog-example`), and install the dependencies from `pyproject.toml`.
+   Be sure to modify the `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` line to the location of the cloned `agent-catalog` repository.
    Use `--with controlflow` to use the ControlFlow backend (more examples with other agent frameworks are coming soon!).
    ```bash
    cd agent-catalog-example/travel_agent
    sed -i -e 's|\$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO|'"$PWD/../../agent-catalog"'|g' pyproject.toml
    poetry install --with controlflow
    ```
+   Tip: Running in verbose mode (with `-v` flag) would be beneficial if you are a windows user or the installation seems to be taking more time.
 4. You should now have the `agentc` command line tool installed.
    Test your installation by running the `agentc` command (_the first run of this command will also compile libraries
    like Numpy, subsequent runs will be faster_).
