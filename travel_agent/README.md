@@ -7,7 +7,7 @@ Agent Catalog (`agentc`).
 
 ### Agent Catalog Setup
 
-1. Ensure that you have `python3.11` and `poetry` installed.
+1. Ensure that you have `python3.12` and `poetry` installed.
    ```bash
    python3 -m pip install poetry
    ```
