@@ -27,7 +27,7 @@ For developers working on any of the `agentc` packages that want to see their ch
 without going through `git`, perform the following:
 
 1. In the specific example you want to run (e.g., `travel_agent`), modify the `[tool.poetry.dependencies.agentc]`
-   section in `pyproject.toml` to point to your `agent-catalog` directory.
+   section in `pyproject.toml` to point to your cloned `agent-catalog` directory.
    Specifically, you'll need to comment out the "git" and "subdirectories" line and comment out the "path" line.
    Substitute `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` accordingly.
    ```toml
@@ -43,4 +43,6 @@ without going through `git`, perform the following:
    ```bash
    poetry update
    ```
-   Your Poetry environment should now possess the `agentc-catalog` files in `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO`.
+   Tip: Running in verbose mode (with `-v` flag) would be beneficial if you are a windows user or the installation seems to be taking more time.
+  
+Your Poetry environment should now possess the `agentc-catalog` files in `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO`.
