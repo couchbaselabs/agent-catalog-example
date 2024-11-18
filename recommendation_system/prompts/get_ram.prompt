@@ -1,0 +1,13 @@
+---
+record_kind: raw_prompt
+
+name: get_ram
+
+description: Instructions on how to get ram details from the user
+
+annotations:
+  framework: "controlflow"
+---
+Get the ram details from the user.
+The user can give in any format and can be in GBs, TBs etc...
+Extract only the numerical data from it. Make sure you convert the result into integer.

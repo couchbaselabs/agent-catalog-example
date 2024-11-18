@@ -1,0 +1,14 @@
+---
+record_kind: raw_prompt
+
+name: get_rating
+
+description: Instructions on how to get rating details from the user
+
+annotations:
+  framework: "controlflow"
+---
+Get the rating details from the user.
+Consider the rating system to be 5 star rating system. Ask user how many stars out of 5 stars.
+Extract only the numerical data from it. Convert the result number into a scale of 0 to 100.
+Example, for a 2.5 star rating the result number should be 50.
