@@ -12,7 +12,6 @@ def get_purchase_link(phone_name):
 
 @app.route('/get-link/<phone_name>', methods=['GET'])
 def get_link(phone_name):
-    print("hello")
     
     if not phone_name:
         return jsonify({"error": "Phone name is required"}), 400
