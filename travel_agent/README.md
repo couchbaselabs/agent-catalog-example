@@ -8,30 +8,46 @@ Agent Catalog (`agentc`).
 ### Agent Catalog Setup
 
 1. Ensure that you have `python3.11` and `poetry` installed.
+
    ```bash
    python3 -m pip install poetry
    ```
-2. Clone this repository and `agent-catalog` -- make sure that you have an SSH key setup!
+
+2. Clone the `agent-catalog` repository.
+   Make sure that you have an SSH key setup!
+
    ```bash
    git clone git@github.com:couchbaselabs/agent-catalog.git
+   ```
+
+3. Clone this repository outside the `agent-catalog` folder.
+
+   ```bash
+   cd ..
    git clone git@github.com:couchbaselabs/agent-catalog-example.git
    ```
-3. Navigate to this directory, and install the dependencies from `pyproject.toml`.
+
+4. Navigate to this directory, and install the dependencies from `pyproject.toml`.
    Be sure to modify the `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` line to the location of the `agent-catalog` repository.
    Use `--with controlflow` to use the ControlFlow backend (more examples with other agent frameworks are coming soon!).
+
    ```bash
    cd agent-catalog-example/travel_agent
    sed -i -e 's|\$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO|'"$PWD/../../agent-catalog"'|g' pyproject.toml
    poetry install --with controlflow
    ```
-4. You should now have the `agentc` command line tool installed.
+
+5. You should now have the `agentc` command line tool installed.
    Test your installation by running the `agentc` command (_the first run of this command will also compile libraries
    like Numpy, subsequent runs will be faster_).
+
    ```bash
    poetry shell
    agentc
    ```
-5. Copy the `.env.example` file into a `.env` file, and update the environment variables appropriately.
+
+6. Copy the `.env.example` file into a `.env` file, and update the environment variables appropriately.
+
    ```bash
    cp .env.example .env
    vi .env
@@ -48,7 +64,11 @@ Now, we need some data in Couchbase!
    We'll be using FTS for its vector index support and analytics to transform our agent activity.
    _If you have Docker installed, you can run the command below to quickly spin-up a Couchbase instance:
    ```bash
-      docker run -d travel-example-db -p 8091-8096:8091-8096 -p 11210-11211:11210-11211 couchbase`
+    mkdir -p .data/couchbase
+    docker run -d --name my_couchbase \
+      -p 8091-8096:8091-8096 -p 11210-11211:11210-11211 \
+      -v "$(pwd)/.data/couchbase:/opt/couchbase/var" \
+      couchbase
    ```
 2. Load the `travel-sample` example in your Couchbase instance (under Settings -> Sample Buckets).
 3. Register your Couchbase connection string, username, and password in the `.env` file.
@@ -62,9 +82,9 @@ Now, we need some data in Couchbase!
    ```bash
    python3 setup/create_index.py
    ```
-   For Capella instances, see the
-   link [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html)
-   for instructions on how to do so using the Capella UI (using the Search -> QUICK INDEX screen).
+   For Capella instances, see the link
+   [here](https://docs.couchbase.com/cloud/vector-search/create-vector-search-index-ui.html) for instructions on how
+   to do so using the Capella UI (using the Search -> QUICK INDEX screen).
 
 ## Execution
 

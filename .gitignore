@@ -75,6 +75,7 @@ target/
 
 # agentc's ignored activity subdirectories.
 .agent-activity/
+.agent-catalog/
 .model-cache/
 
 # Poetry lock files.
