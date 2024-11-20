@@ -1,0 +1,14 @@
+---
+record_kind: raw_prompt
+
+name: filter_level1
+
+description: Instructions on how to get list of relevant mobiles based on the user expectations
+
+annotations:
+  framework: "controlflow"
+---
+Get list of relevant mobiles based on the user expectations namely ram, storage, rating and price. 
+Make sure to list all the smartphones which satisfy the criteria
+
+

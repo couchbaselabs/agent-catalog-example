@@ -31,23 +31,33 @@ provider = agentc.Provider(
 
 @cf.flow
 def smartphone_recommendation_workflow():
-    ram = cf.Task("Get the desired ram from the user",interactive=True,result_type=int,prompt=str(provider.get_prompt_for(query="Get the desired ram from the user")))
-    storage = cf.Task("Get the desired storage from the user", interactive=True,result_type=int,prompt=str(provider.get_prompt_for(query="Get the desired storage from the user")))
-    rating = cf.Task("Get the desired rating (stars) from the user", interactive=True,result_type=int,prompt=str(provider.get_prompt_for(query="Get the desired rating from the user")))
-    price = cf.Task("Get the desired price from the user, basically the budget", interactive=True,result_type=int,prompt=str(provider.get_prompt_for(query="Get the desired price from the user")))
+    ram = cf.Task("Get the desired ram from the user",interactive=True,result_type=int,
+                  prompt=provider.get_prompt_for(query="Get the desired ram from the user").prompt)
+    
+    storage = cf.Task("Get the desired storage from the user", interactive=True,result_type=int,
+                      prompt=provider.get_prompt_for(query="Get the desired storage from the user").prompt)
+    
+    rating = cf.Task("Get the desired rating from the user", interactive=True,result_type=int,
+                     prompt=provider.get_prompt_for(query="Get the desired rating from the user").prompt)
+    
+    price = cf.Task("Get the desired price (budget) from the user", interactive=True,result_type=int,
+                    prompt=provider.get_prompt_for(query="Get the desired price from the user").prompt)
 
-    filtering_stage_1 = cf.Task("Get list of relevant mobiles based on the user expectations namely ram, storage, rating and price. Make sure to list all the smartphones which satisfy the criteria",
+    filtering_level_1 = cf.Task("Get list of relevant mobiles based on the user expectations",
                                        result_type=list[str],
                                        depends_on=[ram,storage,rating,price],
-                                       tools=provider.get_tools_for("Get the relevant mobiles based on the user expectations namely ram, storage, rating and price."))
+                                       tools=provider.get_tools_for("Get the relevant mobiles based on the user expectations"),
+                                       prompt=provider.get_prompt_for("Get list of relevant mobiles based on the user expectations").prompt)
 
 
     display = cf.Task("Get the desired display requirement from the user",interactive=True,result_type=str)
-    filtering_stage_2 = cf.Task("Get mobiles which are close to the display description given by the user",depends_on=[display],result_type=list[str],
+
+    filtering_level_2 = cf.Task("Get mobiles which are close to the display description given by the user",depends_on=[display],result_type=list[str],
                           tools=provider.get_tools_for("Get mobiles which are close to the display description given by the user"))
     
 
-    most_relevant_smartphone = cf.Task("Select one mobile which is most relevant from the results given by filtering_stage_1 and filtering_stage_2",depends_on=[filtering_stage_1, filtering_stage_2],result_type=str,
+    most_relevant_smartphone = cf.Task("Select one mobile which is most relevant from the results given by filtering_stage_1 and filtering_stage_2",
+                                       depends_on=[filtering_level_1, filtering_level_2],result_type=str,
                                        tools=provider.get_tools_for("get the first word which is present in listB (filtering_stage_1) but also present in listA (filtering_stage_2)"))
 
     link = cf.Task("Get the amazon buy link of the mobile phone",tools = provider.get_tools_for("Get the amazon buy link of the mobile phone"),depends_on=[most_relevant_smartphone])

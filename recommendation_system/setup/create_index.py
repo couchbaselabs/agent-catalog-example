@@ -46,7 +46,7 @@ def create_vector_index() -> int:
                                             "dims": 384,
                                             "index": True,
                                             "name": "vec",
-                                            "similarity": "cosine",
+                                            "similarity": "l2_norm",
                                             "type": "vector",
                                             "vector_index_optimized_for": "recall",
                                         }
