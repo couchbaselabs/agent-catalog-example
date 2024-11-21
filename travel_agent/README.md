@@ -7,8 +7,7 @@ Agent Catalog (`agentc`).
 
 ### Agent Catalog Setup
 
-1. Ensure that you have `python3.11` and `poetry` installed.
-
+1. Ensure that you have `python3.12` and `poetry` installed.
    ```bash
    python3 -m pip install poetry
    ```
@@ -27,7 +26,7 @@ Agent Catalog (`agentc`).
    git clone git@github.com:couchbaselabs/agent-catalog-example.git
    ```
 
-4. Navigate to this directory, and install the dependencies from `pyproject.toml`.
+4. Navigate to this directory (`agent-catalog-example/travel_agent`), and install the dependencies from `pyproject.toml`.
    Be sure to modify the `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO` line to the location of the `agent-catalog` repository.
    Use `--with controlflow` to use the ControlFlow backend (more examples with other agent frameworks are coming soon!).
 
@@ -36,6 +35,9 @@ Agent Catalog (`agentc`).
    sed -i -e 's|\$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO|'"$PWD/../../agent-catalog"'|g' pyproject.toml
    poetry install --with controlflow
    ```
+
+   _Tip: Running in verbose mode (with `-v` flag) might be beneficial if you are a Windows user to explain any slow
+   installation steps._
 
 5. You should now have the `agentc` command line tool installed.
    Test your installation by running the `agentc` command (_the first run of this command will also compile libraries
