@@ -1,0 +1,35 @@
+record_kind: semantic_search
+
+name: get_relevant_display
+
+description: >
+  Find the most likely devices which meets the user requirements on display type
+
+input: >
+  {
+    "type": "object",
+    "display": {
+        "type": "string"
+    }
+  }
+
+annotations:
+  gdpr_2016_compliant: "false"
+  ccpa_2019_compliant: "true"
+
+secrets:
+  - couchbase:
+      conn_string: CB_CONN_STRING
+      username: CB_USERNAME
+      password: CB_PASSWORD
+
+
+vector_search:
+  bucket: ecommerce
+  scope: devices
+  collection: smartphones
+  index: mobile-index
+  vector_field: vec
+  text_field: name
+  embedding_model: sentence-transformers/all-MiniLM-L12-v2
+  num_candidates: 20

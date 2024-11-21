@@ -1,0 +1,69 @@
+[tool.poetry]
+name = "travel-example"
+version = "0.1.0"
+description = "A travel agent example built with Couchbase Agent Catalog."
+repository = "https://github.com/couchbaselabs/agent-catalog-example"
+authors = [
+    "Nishanth V M <nishanth.vm@couchbase.com>"
+]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+# For downloading and ingesting blog data into Couchbase.
+newspaper3k = "^0.2.8"
+semchunk = "^2.1.0"
+lxml-html-clean = "^0.1.1"
+sentence-transformers = "^3.0.1"
+python-dotenv = "^1.0.1"
+couchbase = "^4.3.0"
+
+# For hosting servers (in general).
+fastapi = "^0.111.1"
+
+# For building a sample agent interface.
+requests = "^2.32.3"
+streamlit = "^1.36.0"
+streamlit-feedback = "^0.1.3"
+
+# The agentc project (the front-facing parts)!
+[tool.poetry.dependencies.agentc]
+path = "/Users/nishanth.vm/Documents/sample_code_merge/agent-catalog-example/recommendation_system/../../agent-catalog/libs/agentc"
+extras = ["langchain"]
+develop = true
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.0.0"
+pytest = "^8.3.2"
+
+[tool.poetry.group.analytics]
+optional = true
+
+[tool.poetry.group.analytics.dependencies]
+jupyterlab = "^4.2.5"
+ragas = "^0.1.19"
+
+[tool.poetry.group.controlflow]
+optional = true
+
+# TODO (GLENN): We should freeze this dependency to a specific version.
+[tool.poetry.group.controlflow.dependencies]
+controlflow = "0.10.0"
+
+[tool.ruff]
+line-length = 120
+lint.select = ["F", "B", "I", "SIM"]
+show-fixes = true
+
+[tool.ruff.lint.isort]
+no-sections = true
+force-single-line = true
+lines-between-types = 1
+force-wrap-aliases = true
+split-on-trailing-comma = false
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

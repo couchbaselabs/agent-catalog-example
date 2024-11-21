@@ -1,0 +1,89 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "Phone Purchase Link API",
+      "version": "1.0.0",
+      "description": "An API to get purchase links for phones from Amazon."
+    },
+    "servers": [
+      {
+        "url": "http://127.0.0.1:5000"
+      }
+    ],
+    "paths": {
+      "/get-link/{phone_name}": {
+        "get": {
+          "summary": "Get purchase link for a phone",
+          "description" : "Gets the amazon link to buy the phone",
+          "operationId": "getPurchaseLink",
+          "parameters": [
+            {
+              "name": "phone_name",
+              "in": "path",
+              "required": true,
+              "schema": {
+                "type": "string",
+                "description": "The name of the phone to search for"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Successfully retrieved the purchase link",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "phone_name": {
+                        "type": "string",
+                        "description": "The name of the phone"
+                      },
+                      "purchase_link": {
+                        "type": "string",
+                        "description": "The URL to purchase the phone"
+                      }
+                    },
+                    "required": ["phone_name", "purchase_link"]
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Phone name is required",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "Phone name is required"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "404": {
+              "description": "Could not find a link to purchase the phone",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "error": {
+                        "type": "string",
+                        "example": "Could not find a link to purchase the phone"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
