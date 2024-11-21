@@ -131,6 +131,10 @@ We are now ready to start using Agent Catalog and ControlFlow to build agents!
    ./quickstart.sh controlflow
    ```
 5. Navigate to http://localhost:8501 and try out the app!
+   Below is a screenshot of what you should see:
+
+   ![Streamlit App Screenshot](src/resources/images/using-streamlit-app.png)
+
 6. To stop the FastAPI + Prefect (if using ControlFlow) servers spawned as background processes in step 4, use Ctrl-C.
    If you still see left-over processes, run the command below.
    ```bash
