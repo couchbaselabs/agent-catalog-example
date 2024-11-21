@@ -11,7 +11,7 @@ Agent Catalog (`agentc`).
    ```bash
    python3 -m pip install poetry
    ```
-2. Clone this repository and `agent-catalog` -- make sure that you have an SSH key setup!
+2. Clone this repository and `agent-catalog` in the same parent repository -- make sure that you have an SSH key setup!
    ```bash
    git clone git@github.com:couchbaselabs/agent-catalog.git
    git clone git@github.com:couchbaselabs/agent-catalog-example.git
