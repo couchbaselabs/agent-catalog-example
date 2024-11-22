@@ -33,6 +33,7 @@ Agent Catalog (`agentc`).
    ```bash
    cd agent-catalog-example/travel_agent
    sed -i -e 's|\$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO|'"$PWD/../../agent-catalog"'|g' pyproject.toml
+   git add pyproject.toml ; git commit --amend
    poetry install --with controlflow
    ```
 

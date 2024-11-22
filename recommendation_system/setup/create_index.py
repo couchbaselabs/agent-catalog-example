@@ -1,5 +1,4 @@
 import dotenv
-import http
 import os
 import requests
 
@@ -70,6 +69,6 @@ def create_vector_index() -> int:
 if __name__ == "__main__":
     dotenv.load_dotenv(".env")
     if create_vector_index() == 200:
-        print(f"Vector index (mobile-index) created successfully\n")
+        print("Vector index (mobile-index) created successfully\n")
     else:
-        print(f"Vector index (mobile-index) creation failed\n")
+        print("Vector index (mobile-index) creation failed\n")
