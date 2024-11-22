@@ -44,5 +44,5 @@ without going through `git`, perform the following:
    poetry update
    ```
    Tip: Running in verbose mode (with `-v` flag) would be beneficial if you are a windows user or the installation seems to be taking more time.
-  
+
 Your Poetry environment should now possess the `agentc-catalog` files in `$LOCATION_OF_LOCAL_AGENT_CATALOG_REPO`.
