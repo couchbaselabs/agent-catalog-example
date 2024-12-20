@@ -51,7 +51,7 @@ optional = true
 
 [tool.poetry.group.controlflow.dependencies.controlflow]
 git = "git@github.com:PrefectHQ/ControlFlow.git"
-rev = "321c8726a12cee31db8d68eea5f7bd566dcab8dc"
+rev = "f259fa8144ed31b8bde5902a2de8548dd4601ce5"
 
 [tool.ruff]
 line-length = 120
