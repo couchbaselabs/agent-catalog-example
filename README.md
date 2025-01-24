@@ -1,3 +1,5 @@
+**This repo has been deprecated. Please refer to the mono-repo examples folder [here](https://github.com/couchbaselabs/agent-catalog/tree/master/templates/agents/with_controlflow)**.
+
 # agent-catalog-example
 
 Sample agentic workflows built using Couchbase Agent Catalog.
